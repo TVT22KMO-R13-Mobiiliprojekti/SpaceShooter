@@ -4,7 +4,6 @@ project(":lwjgl3") {
 
   dependencies {
     implementation "com.github.Berstanio.gdx-graalhelper:gdx-svmhelper-backend-lwjgl3:$graalHelperVersion"
-    implementation "com.github.Berstanio.gdx-graalhelper:gdx-svmhelper-extension-freetype:$graalHelperVersion"
   }
   graalvmNative {
     binaries {
