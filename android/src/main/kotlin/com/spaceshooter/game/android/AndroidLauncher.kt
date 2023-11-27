@@ -1,10 +1,13 @@
 package com.spaceshooter.game.android
 
+import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
 import com.spaceshooter.game.Main
+import com.spaceshooter.game.MainActivity
 
 /** Launches the Android application. */
 class AndroidLauncher : AndroidApplication() {
@@ -15,4 +18,29 @@ class AndroidLauncher : AndroidApplication() {
             useImmersiveMode = true // Recommended, but not required.
         })
     }
+    override fun onBackPressed() {
+        showExitConfirmationDialog()
+    }
+
+    private fun showExitConfirmationDialog(){
+        val alertDialog = AlertDialog.Builder(this)
+            .setTitle("Exit")
+            .setMessage("Are you sure you want exit game")
+            .setPositiveButton("Yes") { _, _ ->
+                // User confirmed, so allow the default behavior
+                val intent = Intent(this, MainActivity::class.java)
+                finish()
+                startActivity(intent)
+
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                // User canceled, so dismiss the dialog
+                dialog.dismiss()
+            }
+            .create()
+
+        alertDialog.show()
+    }
+
+
 }
