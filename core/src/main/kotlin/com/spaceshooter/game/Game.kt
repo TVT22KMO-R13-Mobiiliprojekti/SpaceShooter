@@ -74,6 +74,7 @@ class Game {
             var bullet: Bullet = Bullet()
             bullet.setPos(Vector2(rectangle.x, rectangle.y))
             bullet.setTexture(bulletImage)
+            bullet.setArea(Vector2(32.0f, 32.0f))
 
             bulletList.add(bullet)
             bulletTimer = 0.0f
@@ -90,8 +91,9 @@ class Game {
         ScreenUtils.clear(0.0f, 0.0f, 0.2f, 1.0f);
         camera?.update();
 
-        if(this.camera != null)
-        batch.setProjectionMatrix(this.camera?.combined);
+        if(this.camera != null) {
+            batch.setProjectionMatrix(this.camera?.combined);
+        }
 
         batch.begin()
 
@@ -99,7 +101,7 @@ class Game {
 
         for (b in bulletList)
         {
-            batch.draw(bulletImage, b.getPos().x, b.getPos().y, 32.0f, 32.0f)
+            batch.draw(b.getTexture(), b.getPos().x, b.getPos().y, b.getArea().x, b.getArea().y)
         }
 
         batch.end()

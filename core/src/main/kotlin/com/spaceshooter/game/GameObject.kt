@@ -18,6 +18,11 @@ open class GameObject(var position: Vector2 = Vector2(0.0f, 0.0f), var size: Vec
         this.texture = texture
     }
 
+    open fun getTexture(): Texture
+    {
+        return this.texture
+    }
+
     fun setPos(position : Vector2)
     {
         this.position = position
@@ -26,5 +31,16 @@ open class GameObject(var position: Vector2 = Vector2(0.0f, 0.0f), var size: Vec
     fun getPos(): Vector2
     {
         return this.position
+    }
+
+    //setArea is setting the 'size' variable of the GameObject, the compiler does not like it being called setSize and getSize for some reason.
+    fun setArea(size: Vector2)
+    {
+        this.size = size
+    }
+
+    fun getArea() : Vector2
+    {
+        return this.size
     }
 }
