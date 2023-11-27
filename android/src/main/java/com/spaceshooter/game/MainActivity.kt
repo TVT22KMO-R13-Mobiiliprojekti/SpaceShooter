@@ -10,9 +10,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val button = findViewById<Button>(R.id.btngame)
+        val btnGame = findViewById<Button>(R.id.btn_game)
+        val btnHighscore = findViewById<Button>(R.id.btn_highscore)
+        val btnSettings = findViewById<Button>(R.id.btn_settings)
 
-        button.setOnClickListener {
+
+        btnGame.setOnClickListener {
             val intent = Intent(this, AndroidLauncher::class.java)
             startActivity(intent)
         }
