@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.ScreenUtils
 
@@ -19,19 +20,23 @@ class Game {
 
     private val playerImage by lazy { Texture("player.png") }
 
+    private val bulletImage by lazy { Texture("bullet.png")}
+
     //private val player: Player = TODO()
-    //private var bulletList : ArrayList<Bullet> = TODO()
+    private var bulletList : ArrayList<Bullet> = arrayListOf()
 
     //private var enemyList : ArrayList<Enemy> = TODO()
     //private var enemyBulletList : ArrayList<Bullet> = TODO()
 
     private var rectangle: Rectangle = Rectangle()
 
+    private var bulletTimer : Float = 0.0f
+
     public fun initialize()
     {
         // create the camera and the SpriteBatch
         camera = OrthographicCamera()
-        camera!!.setToOrtho(false, 800f, 480f)
+        camera!!.setToOrtho(false, 1920f, 1080f)
         // create a Rectangle to logically represent the bucket
         rectangle = Rectangle()
         rectangle.x = (800.0f / 2.0f - 64.0f / 2.0f) // center the bucket horizontally
@@ -60,6 +65,24 @@ class Game {
         if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
             rectangle.x += 200 * Gdx.graphics.deltaTime
         }
+
+        bulletTimer += Gdx.graphics.deltaTime
+
+        if(bulletTimer >= 1.0f)
+        {
+
+            var bullet: Bullet = Bullet()
+            bullet.setPos(Vector2(rectangle.x, rectangle.y))
+            bullet.setTexture(bulletImage)
+
+            bulletList.add(bullet)
+            bulletTimer = 0.0f
+        }
+
+        for (b in bulletList)
+        {
+            b.update(Gdx.graphics.deltaTime)
+        }
     }
 
     public fun draw(dt: Float)
@@ -73,6 +96,11 @@ class Game {
         batch.begin()
 
         batch.draw(playerImage, rectangle.x, rectangle.y, rectangle.width, rectangle.height)
+
+        for (b in bulletList)
+        {
+            batch.draw(bulletImage, b.getPos().x, b.getPos().y, 32.0f, 32.0f)
+        }
 
         batch.end()
 
