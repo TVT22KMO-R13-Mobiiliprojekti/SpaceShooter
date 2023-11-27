@@ -13,12 +13,12 @@ class Player(): GameObject() {
 
     }
 
-    fun setPosition(position : Vector2)
+    fun setPos(position : Vector2)
     {
         this.position = position
     }
 
-    fun getPosition(): Vector2
+    fun getPos(): Vector2
     {
         return this.position
     }
