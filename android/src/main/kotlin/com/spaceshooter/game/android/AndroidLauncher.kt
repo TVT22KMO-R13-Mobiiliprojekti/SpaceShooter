@@ -28,9 +28,9 @@ class AndroidLauncher : AndroidApplication() {
             .setMessage("Are you sure you want exit game")
             .setPositiveButton("Yes") { _, _ ->
                 // User confirmed, so allow the default behavior
-                val intent = Intent(this, MainActivity::class.java)
+                //val intent = Intent(this, MainActivity::class.java)
                 finish()
-                startActivity(intent)
+                //startActivity(intent)
 
             }
             .setNegativeButton("No") { dialog, _ ->
