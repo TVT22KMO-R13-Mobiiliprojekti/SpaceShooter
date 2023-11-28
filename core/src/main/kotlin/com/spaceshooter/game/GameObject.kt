@@ -8,7 +8,7 @@ open class GameObject(var position: Vector2 = Vector2(0.0f, 0.0f), var size: Vec
 
     private lateinit var texture : Texture
 
-    internal var speed: Float = 400.0f
+    internal var speed: Vector2 = Vector2(400.0f, 0.0f)
 
     open fun update(deltaTime: Float) {}
     open fun render() {}
@@ -42,5 +42,15 @@ open class GameObject(var position: Vector2 = Vector2(0.0f, 0.0f), var size: Vec
     fun getArea() : Vector2
     {
         return this.size
+    }
+
+    fun setSpeed(speed: Vector2)
+    {
+        this.speed = speed
+    }
+
+    fun getSpeed() : Vector2
+    {
+        return speed
     }
 }
