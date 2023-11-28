@@ -49,24 +49,14 @@ class Game {
         // create the camera and the SpriteBatch
         camera = OrthographicCamera()
         camera!!.setToOrtho(false, 1920f, 1080f)
-        // create a Rectangle to logically represent the bucket
-        //rectangle = Rectangle()
-        //rectangle.x = (800.0f / 2.0f - 64.0f / 2.0f) // center the bucket horizontally
-
-        //rectangle.y = 20.0f // bottom left corner of the bucket is 20 pixels above
-
-        //rectangle.width = 128.0f
-        //rectangle.height = 32.0f
 
         player.setPos(Vector2(100.0f, 480.0f))
         player.setArea(Vector2(128.0f, 32.0f))
-
-
-
     }
 
     public fun update(dt: Float)
     {
+        var deltaTime = Gdx.graphics.deltaTime
         //Game update logic goes here
 
         // process user input
@@ -115,7 +105,7 @@ class Game {
             //rectangle.x += 200 * Gdx.graphics.deltaTime
         }
 
-        bulletTimer += Gdx.graphics.deltaTime
+        bulletTimer += deltaTime
 
         if(bulletTimer >= 0.5f)
         {
@@ -133,17 +123,17 @@ class Game {
 
         for (b in bulletList)
         {
-            b.update(Gdx.graphics.deltaTime)
+            b.update(deltaTime)
         }
 
-        player.update(Gdx.graphics.deltaTime)
+        player.update(deltaTime)
 
         // Move the backgrounds
         val backgroundSpeed = 50f // Adjust the speed as needed
         val backgroundSpeed2 = 100f // Adjust the speed as needed
-        bg1XPos -= backgroundSpeed * Gdx.graphics.deltaTime
-        bg2XPos -= backgroundSpeed * Gdx.graphics.deltaTime
-        bg3XPos -= backgroundSpeed2 * Gdx.graphics.deltaTime
+        bg1XPos -= backgroundSpeed * deltaTime
+        bg2XPos -= backgroundSpeed * deltaTime
+        bg3XPos -= backgroundSpeed2 * deltaTime
 
         // Reset the backgrounds to create a looping effect
         val backgroundWidth = 1920f
