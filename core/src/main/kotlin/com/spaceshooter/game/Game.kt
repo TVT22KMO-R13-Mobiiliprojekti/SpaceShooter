@@ -19,6 +19,13 @@ class Game {
     private val batch by lazy { SpriteBatch() }
     private val image by lazy { Texture("libgdx.png") }
 
+    private val background1 by lazy { Texture("bkgd_0.png") }
+    private val background2 by lazy { Texture("bkgd_1.png") }
+
+    private var bg1XPos = 0f
+    private var bg2XPos = 1920f // assuming the width of the image is 1920
+    private var bg3XPos = 1920f
+
     private val playerImage by lazy { Texture("player.png") }
 
     private val bulletImage by lazy { Texture("bullet.png")}
@@ -130,11 +137,30 @@ class Game {
         }
 
         player.update(Gdx.graphics.deltaTime)
+
+        // Move the backgrounds
+        val backgroundSpeed = 50f // Adjust the speed as needed
+        val backgroundSpeed2 = 100f // Adjust the speed as needed
+        bg1XPos -= backgroundSpeed * Gdx.graphics.deltaTime
+        bg2XPos -= backgroundSpeed * Gdx.graphics.deltaTime
+        bg3XPos -= backgroundSpeed2 * Gdx.graphics.deltaTime
+
+        // Reset the backgrounds to create a looping effect
+        val backgroundWidth = 1920f
+        if (bg1XPos + backgroundWidth <= 0) {
+            bg1XPos = bg2XPos + backgroundWidth // Set it after the second image
+        }
+        if (bg2XPos + backgroundWidth <= 0) {
+            bg2XPos = bg1XPos + backgroundWidth // Set it after the first image
+        }
+        if (bg3XPos + backgroundWidth <= 0) {
+            bg3XPos = backgroundWidth
+        }
     }
 
     public fun draw(dt: Float)
     {
-        ScreenUtils.clear(0.0f, 0.0f, 0.2f, 1.0f);
+        ScreenUtils.clear(0.0f, 0.0f, 0.0f, 1.0f);
         camera?.update();
 
         if(this.camera != null) {
@@ -142,6 +168,11 @@ class Game {
         }
 
         batch.begin()
+
+        // Draw the backgrounds with their updated positions
+        batch.draw(background2, bg1XPos, 0f, 1920f, 1080f)
+        batch.draw(background2, bg2XPos, 0f, 1920f, 1080f)
+        //batch.draw(background1, bg3XPos, 0f, 1920f, 1080f)
 
         //batch.draw(playerImage, rectangle.x, rectangle.y, rectangle.width, rectangle.height)
 
