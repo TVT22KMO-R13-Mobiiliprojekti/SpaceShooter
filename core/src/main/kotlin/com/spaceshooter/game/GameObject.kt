@@ -1,6 +1,7 @@
 package com.spaceshooter.game
 
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 
 open class GameObject(var position: Vector2 = Vector2(0.0f, 0.0f), var size: Vector2 = Vector2(0.0f, 0.0f)) {
@@ -9,6 +10,8 @@ open class GameObject(var position: Vector2 = Vector2(0.0f, 0.0f), var size: Vec
     private lateinit var texture : Texture
 
     internal var speed: Vector2 = Vector2(400.0f, 0.0f)
+
+    private var hitBox : Rectangle = Rectangle()
 
     open fun update(deltaTime: Float) {}
     open fun render() {}
@@ -54,8 +57,19 @@ open class GameObject(var position: Vector2 = Vector2(0.0f, 0.0f), var size: Vec
         return speed
     }
 
-    fun checkCollision(gameObject: GameObject)
+    fun setHitBoxSize(width: Float, height: Float)
     {
-        
+        this.hitBox.width = width
+        this.hitBox.height = height
+    }
+
+    fun getHitBox() : Rectangle
+    {
+        return this.hitBox
+    }
+
+    fun checkCollision(gameObject: GameObject): Boolean
+    {
+        return hitBox.contains(gameObject.getHitBox())
     }
 }
