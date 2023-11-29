@@ -137,6 +137,7 @@ class Game {
         val spawnPoints = arrayOf(
             Vector2(1700f, 500f),
             Vector2(1600f, 800f),
+            Vector2(1600f, 200f)
             // Add more spawn points if needed
         )
 
@@ -147,7 +148,7 @@ class Game {
             var enemy: Enemy = Enemy()
             enemy.setPos(spawnPoint)
             enemy.setTexture(enemyImage)
-            enemy.setArea(Vector2(512f, 256f))
+            enemy.setArea(Vector2(128f, 64f))
 
             val directionLeft = Vector2(-1f, 0f) // Left direction
 
