@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.ScreenUtils
+import java.awt.geom.Area
+import kotlin.random.Random
 
 
 class Game {
@@ -30,13 +32,16 @@ class Game {
 
     private val bulletImage by lazy { Texture("bullet.png")}
 
+    private val enemyImage by lazy { Texture("enemy.png") }
+
     private val player: Player = Player()
     private var bulletList : ArrayList<Bullet> = arrayListOf()
-
-    //private var enemyList : ArrayList<Enemy> = TODO()
+    private var enemyList : ArrayList<Enemy> = arrayListOf()
     //private var enemyBulletList : ArrayList<Bullet> = TODO()
 
     //private var rectangle: Rectangle = Rectangle()
+
+    private var enemyTimer : Float = 0.0f
 
     private var bulletTimer : Float = 0.0f
 
@@ -126,6 +131,38 @@ class Game {
             b.update(deltaTime)
         }
 
+        enemyTimer += deltaTime
+
+        // spawn points
+        val spawnPoints = arrayOf(
+            Vector2(1700f, 500f),
+            Vector2(1600f, 800f),
+            // Add more spawn points if needed
+        )
+
+        if (enemyTimer >= 3.5f) {
+            val randomIndex = (Math.random() * spawnPoints.size).toInt()
+            val spawnPoint = spawnPoints[randomIndex]
+
+            var enemy: Enemy = Enemy()
+            enemy.setPos(spawnPoint)
+            enemy.setTexture(enemyImage)
+            enemy.setArea(Vector2(512f, 256f))
+
+            val directionLeft = Vector2(-1f, 0f) // Left direction
+
+            val enemySpeed = 50f // Adjust the speed
+            enemy.setSpeed(Vector2(directionLeft.x * enemySpeed, directionLeft.y * enemySpeed))
+
+            enemyList.add(enemy)
+            enemyTimer = 0.0f
+        }
+
+        for (e in enemyList)
+        {
+            e.update(deltaTime)
+        }
+
         player.update(deltaTime)
 
         // Move the backgrounds
@@ -167,9 +204,15 @@ class Game {
         //batch.draw(playerImage, rectangle.x, rectangle.y, rectangle.width, rectangle.height)
 
         batch.draw(playerImage, player.getPos().x, player.getPos().y, player.getArea().x, player.getArea().y)
+
         for (b in bulletList)
         {
             batch.draw(b.getTexture(), b.getPos().x, b.getPos().y, b.getArea().x, b.getArea().y)
+        }
+
+        for (e in enemyList)
+        {
+            batch.draw(e.getTexture(), e.getPos().x, e.getPos().y, e.getArea().x, e.getArea().y)
         }
 
         batch.end()
