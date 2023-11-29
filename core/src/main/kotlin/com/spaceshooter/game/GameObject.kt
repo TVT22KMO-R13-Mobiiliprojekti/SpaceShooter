@@ -53,4 +53,9 @@ open class GameObject(var position: Vector2 = Vector2(0.0f, 0.0f), var size: Vec
     {
         return speed
     }
+
+    fun checkCollision(gameObject: GameObject)
+    {
+        
+    }
 }
