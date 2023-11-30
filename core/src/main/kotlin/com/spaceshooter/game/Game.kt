@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.MathUtils.*
 import com.badlogic.gdx.math.Rectangle
@@ -49,18 +50,30 @@ class Game {
 
     private var touchStartPos : Vector3 = Vector3(0.0f,0.0f, 0.0f)
 
+    private var content : Content = Content()
+
+    private val testSprite  by lazy { Sprite() }
+
     public fun initialize()
     {
+        content.initialize()
         // create the camera and the SpriteBatch
         camera = OrthographicCamera()
         camera!!.setToOrtho(false, 1920f, 1080f)
 
         player.setPos(Vector2(100.0f, 480.0f))
         player.setArea(Vector2(128.0f, 32.0f))
+        player.setHitBoxSize(player.getArea().x, player.getArea().y)
+
+        player.setTexture(content.getTexture("player.png"))
+
+        testSprite.texture = playerImage
     }
 
     public fun update(dt: Float)
     {
+
+        content.getAssetManager().update()
         var deltaTime = Gdx.graphics.deltaTime
         //Game update logic goes here
 
@@ -94,7 +107,7 @@ class Game {
             var speedMultiplier = 0.01f
 
             //Gdx.app.log("ANGLE IN RAD", "Angle : $angle")
-            Gdx.app.log("DISTANCE : ", "DISTANCE : $distance")
+            //Gdx.app.log("DISTANCE : ", "DISTANCE : $distance")
 
             player.setSpeed(Vector2(distance * speedX * speedMultiplier, distance * speedY * 1.2f * speedMultiplier ))
         }
@@ -119,6 +132,7 @@ class Game {
             bullet.setPos(Vector2(player.getPos().x + player.getArea().x/2, player.getPos().y + player.getArea().y/2))
             bullet.setTexture(bulletImage)
             bullet.setArea(Vector2(32.0f, 8.0f))
+            bullet.setHitBoxSize(bullet.getArea().x, bullet.getArea().y)
 
             bullet.setSpeed(Vector2(400.0f, 0.0f))
             //bullet.setSpeed(Vector2(400.0f, 100.0f - random(200.0f)))
@@ -129,6 +143,13 @@ class Game {
         for (b in bulletList)
         {
             b.update(deltaTime)
+            for(x in enemyList)
+            {
+                if(x.checkCollision(b))
+                {
+                    Gdx.app.log("Collision detected", "Bullet is colliding with enemy")
+                }
+            }
         }
 
         enemyTimer += deltaTime
@@ -149,12 +170,14 @@ class Game {
             enemy.setPos(spawnPoint)
             enemy.setTexture(enemyImage)
             enemy.setArea(Vector2(128f, 64f))
+            enemy.setHitBoxSize(enemy.getArea().x, enemy.getArea().y)
 
             val directionLeft = Vector2(-1f, 0f) // Left direction
 
             val enemySpeed = 50f // Adjust the speed
             enemy.setSpeed(Vector2(directionLeft.x * enemySpeed, directionLeft.y * enemySpeed))
 
+            Gdx.app.log("Enemy spawned to location: ","X:" + enemy.getPos().x + " Y: " + enemy.getPos().y)
             enemyList.add(enemy)
             enemyTimer = 0.0f
         }
@@ -162,6 +185,8 @@ class Game {
         for (e in enemyList)
         {
             e.update(deltaTime)
+            //Gdx.app.log("Enemy hitbox info: ", "Pos X: " + e.getHitBox().x + " Pos Y: " + e.getHitBox().y + " Hitbox height : " + e.getHitBox().height + " Hitbox width: " + e.getHitBox().width)
+
         }
 
         player.update(deltaTime)
@@ -204,8 +229,7 @@ class Game {
 
         //batch.draw(playerImage, rectangle.x, rectangle.y, rectangle.width, rectangle.height)
 
-        batch.draw(playerImage, player.getPos().x, player.getPos().y, player.getArea().x, player.getArea().y)
-
+        //batch.draw(playerImage, player.getPos().x, player.getPos().y, player.getArea().x, player.getArea().y)
         for (b in bulletList)
         {
             batch.draw(b.getTexture(), b.getPos().x, b.getPos().y, b.getArea().x, b.getArea().y)
@@ -216,6 +240,11 @@ class Game {
             batch.draw(e.getTexture(), e.getPos().x, e.getPos().y, e.getArea().x, e.getArea().y)
         }
 
+        if(testSprite.texture != null) {
+            testSprite.draw(batch)
+        }
+
+        player.render(batch)
         batch.end()
 
     }
