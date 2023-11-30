@@ -8,7 +8,7 @@ xmlns:tools="http://schemas.android.com/tools">
     android:icon="@drawable/ic_launcher"
     android:isGame="true"
     android:label="@string/app_name"
-    android:theme="@style/Theme.AppCompat.Light"
+    android:theme="@style/Theme.AppCompat.NoActionBar"
     tools:ignore="UnusedAttribute">
     <activity
         android:name="com.spaceshooter.game.MainActivity"
@@ -33,7 +33,6 @@ xmlns:tools="http://schemas.android.com/tools">
         android:name=".android.AndroidLauncher"
         android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout"
         android:exported="true"
-        android:label="@string/app_name"
         android:screenOrientation="sensorLandscape" />
 </application>
 

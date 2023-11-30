@@ -9,8 +9,8 @@
     tools:context=".SettingsActivity">
 
     <LinearLayout
-        android:layout_width="659dp"
-        android:layout_height="354dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
@@ -28,8 +28,10 @@
             android:layout_gravity="bottom"
             android:layout_weight="1"
             android:background="@drawable/rounded_button"
+            android:fontFamily="@font/space_quest"
             android:text="Return"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"/>
 
         <TableLayout
             android:layout_width="match_parent"
@@ -47,7 +49,8 @@
                     android:layout_height="wrap_content"
                     android:text="Music"
                     android:textColor="#FFFFFF"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    android:fontFamily="@font/space_quest"/>
 
                 <Switch
                     android:id="@+id/switch_music"
@@ -76,7 +79,8 @@
                     android:layout_height="wrap_content"
                     android:text="SFX"
                     android:textColor="#FFFFFF"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    android:fontFamily="@font/space_quest"/>
 
                 <Switch
                     android:id="@+id/switch_sfx"

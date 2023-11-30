@@ -7,7 +7,7 @@ object MediaManager {
     private var mediaPlayer: MediaPlayer? = null
 
     fun initializeMediaPlayer(context: Context, resourceId: Int) {
-        releaseMediaPlayer()
+        //releaseMediaPlayer()
         mediaPlayer = MediaPlayer.create(context, resourceId)
         mediaPlayer?.isLooping = true
     }
