@@ -9,11 +9,14 @@ import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
 import com.spaceshooter.game.Main
 import com.spaceshooter.game.MainActivity
+import com.spaceshooter.game.R
 
 /** Launches the Android application. */
 class AndroidLauncher : AndroidApplication() {
 
     private lateinit var mediaPlayer: MediaManager
+    private val musicMenu = R.raw.test_music
+    private val musicGame = R.raw.test_music_2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,11 +24,12 @@ class AndroidLauncher : AndroidApplication() {
             // Configure your application here.
             useImmersiveMode = true // Recommended, but not required.
         })
-        val intent = intent
-        val musicResource = intent.getIntExtra("musicResource", 0)
+        //val intent = intent
+        //val musicResource = intent.getIntExtra("musicResource", 0)
         mediaPlayer = MediaManager
-        mediaPlayer.initializeMediaPlayer(this, musicResource)
-        mediaPlayer.startMediaPlayer()
+        //mediaPlayer.initializeMediaPlayer(this, R.raw.test_music)
+        //mediaPlayer.startMediaPlayer()
+        mediaPlayer.switchMusic(this,musicGame)
     }
     override fun onBackPressed() {
         showExitConfirmationDialog()
@@ -38,7 +42,7 @@ class AndroidLauncher : AndroidApplication() {
             .setPositiveButton("Yes") { _, _ ->
                 // User confirmed, so allow the default behavior
                 //val intent = Intent(this, MainActivity::class.java)
-                mediaPlayer.stopMediaPlayer()
+                mediaPlayer.switchMusic(this,musicMenu)
                 finish()
                 //startActivity(intent)
 

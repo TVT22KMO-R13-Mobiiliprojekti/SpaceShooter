@@ -1,12 +1,11 @@
 package com.spaceshooter.game
 
-import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
-import android.widget.Switch
 import MediaManager
+import android.widget.Switch
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -14,6 +13,7 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var btnReturn: Button
     private lateinit var switchMusic: Switch
     private lateinit var switchSfx: Switch
+    private val musicMenu = R.raw.test_music
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -33,9 +33,11 @@ class SettingsActivity : AppCompatActivity() {
         btnReturn.setOnClickListener {
             finish()
         }
+        switchMusic.isChecked = mediaPlayer.isMediaPlayerPlaying()
+
 
         switchMusic.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) mediaPlayer.startMediaPlayer() else mediaPlayer.stopMediaPlayer()
+            if (isChecked) mediaPlayer.playBackgroundSound(this, musicMenu) else mediaPlayer.stopBackgroundSound()
         }
     }
 }

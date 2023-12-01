@@ -23,6 +23,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mediaPlayer: MediaManager
 
+    private val musicMenu = R.raw.test_music
+    private val musicGame = R.raw.test_music_2
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -32,9 +35,9 @@ class MainActivity : AppCompatActivity() {
         val paint = txtTitle.paint
         val width = paint.measureText(txtTitle.text.toString())
         val textShader: Shader = LinearGradient(0f, 0f, 0f, txtTitle.textSize, intArrayOf(
-            Color.parseColor("#F9D838"),
-            Color.parseColor("#E00C13"),
-            //Color.parseColor("#8446CC")
+            Color.parseColor("#EACF2A"),
+            Color.parseColor("#EB972A"),
+            Color.parseColor("#E00C13")
         ), null, Shader.TileMode.REPEAT)
 
         txtTitle.paint.setShader(textShader)
@@ -46,16 +49,17 @@ class MainActivity : AppCompatActivity() {
         mediaPlayer = MediaManager
         // Assuming you have a file named "test_music.mp3" in the res/raw directory
         //val musicMenu = resources.getIdentifier("test_music", "raw", packageName)
+        //val musicGame = resources.getIdentifier("test_music_2", "raw", packageName)
+
         //mediaPlayer.initializeMediaPlayer(this, musicMenu)
-        //mediaPlayer.startMediaPlayer()
+        mediaPlayer.playBackgroundSound(this, musicMenu)
 
         btnGame.setOnClickListener {
             // Start the game activity
             val intent = Intent(this, AndroidLauncher::class.java)
             //we want different music in gameplay window, we need to check how to implement that
-            mediaPlayer.stopMediaPlayer()
-            val musicGame = resources.getIdentifier("test_music_2", "raw", packageName)
-            intent.putExtra("musicResource", musicGame)
+            //mediaPlayer.stopMediaPlayer()
+            //intent.putExtra("musicResource", musicGame)
             startActivity(intent)
         }
         btnHighscore.setOnClickListener {
@@ -73,10 +77,10 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         // Resume or start the original music when the MainActivity is resumed
-        if (!mediaPlayer.isMediaPlayerPlaying()) {
-            val musicMenu = resources.getIdentifier("test_music", "raw", packageName)
-            mediaPlayer.initializeMediaPlayer(this, musicMenu)
-            mediaPlayer.startMediaPlayer()
+        if (mediaPlayer.isMediaPlayerPlaying()) {
+            //val musicMenu = resources.getIdentifier("test_music", "raw", packageName)
+            //mediaPlayer.initializeMediaPlayer(this, musicMenu)
+            //mediaPlayer.startMediaPlayer()
         }
     }
     override fun onBackPressed() {

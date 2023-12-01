@@ -56,7 +56,7 @@
                     android:id="@+id/switch_music"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:checked="true" />
+                     />
 
             </TableRow>
 
