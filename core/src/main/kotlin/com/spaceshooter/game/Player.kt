@@ -23,6 +23,4 @@ class Player(): GameObject() {
         //Gdx.app.log("SPRITE INFO: ", "Texture height: " + sprite.texture.height)
         //Gdx.app.log("Texture Info", "Width: ${sprite.texture.depth}, Height: ${sprite.texture.height}")
     }
-
-
 }

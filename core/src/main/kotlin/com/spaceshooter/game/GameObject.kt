@@ -11,12 +11,11 @@ import java.lang.Math.*
 open class GameObject(var position: Vector2 = Vector2(0.0f, 0.0f), var size: Vector2 = Vector2(0.0f, 0.0f)) {
 
     internal var sprite: Sprite = Sprite()
-
     private lateinit var texture : Texture
 
     internal var speed: Vector2 = Vector2(400.0f, 0.0f)
-
     internal var hitBox : Rectangle = Rectangle()
+    internal var isDead : Boolean = false
 
     open fun update(deltaTime: Float) {}
     open fun render(spriteBatch: SpriteBatch)
@@ -94,5 +93,15 @@ open class GameObject(var position: Vector2 = Vector2(0.0f, 0.0f), var size: Vec
         sprite.setColor(1f, 1f, 1f, 1f);
         sprite.setSize(abs(srcWidth.toFloat()), abs(srcHeight.toFloat()));
         sprite.setOrigin(sprite.width / 2, sprite.height / 2);
+    }
+
+    fun kill()
+    {
+        this.isDead = true
+    }
+
+    fun isDead(): Boolean
+    {
+        return this.isDead
     }
 }

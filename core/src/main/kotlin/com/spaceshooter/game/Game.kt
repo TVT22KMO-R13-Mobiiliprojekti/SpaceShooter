@@ -12,6 +12,8 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.ScreenUtils
 import java.awt.geom.Area
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.random.Random
 
 
@@ -36,8 +38,8 @@ class Game {
     private val enemyImage by lazy { Texture("enemy.png") }
 
     private val player: Player = Player()
-    private var bulletList : ArrayList<Bullet> = arrayListOf()
-    private var enemyList : ArrayList<Enemy> = arrayListOf()
+    private var bulletList : Vector<Bullet> = Vector<Bullet>()
+    private var enemyList : Vector<Enemy> = Vector<Enemy>()
     //private var enemyBulletList : ArrayList<Bullet> = TODO()
 
     //private var rectangle: Rectangle = Rectangle()
@@ -69,6 +71,7 @@ class Game {
 
         testSprite.texture = playerImage
     }
+
 
     public fun update(dt: Float)
     {
@@ -143,11 +146,20 @@ class Game {
         for (b in bulletList)
         {
             b.update(deltaTime)
-            for(x in enemyList)
+        }
+
+        for (b in bulletList.indices)
+        {
+            Gdx.app.log("Collision", "Checking Vector loop works")
+
+            for(x in enemyList.indices)
             {
-                if(x.checkCollision(b))
+                Gdx.app.log("Collision", "Checking Vector loop works for enemy")
+                if(enemyList[x].checkCollision(bulletList[b]))
                 {
                     Gdx.app.log("Collision detected", "Bullet is colliding with enemy")
+                    enemyList[x].kill()
+                    bulletList[b].kill()
                 }
             }
         }
@@ -157,8 +169,8 @@ class Game {
         // spawn points
         val spawnPoints = arrayOf(
             Vector2(1700f, 500f),
-            Vector2(1600f, 800f),
-            Vector2(1600f, 200f)
+            Vector2(1700f, 800f),
+            Vector2(1700f, 200f)
             // Add more spawn points if needed
         )
 
@@ -208,6 +220,24 @@ class Game {
         }
         if (bg3XPos + backgroundWidth <= 0) {
             bg3XPos = backgroundWidth
+        }
+
+        //Removal of dead GameObjects:
+        for(e in enemyList.indices.reversed())
+        {
+            if(enemyList[e].isDead())
+            {
+                enemyList[e] = null
+                enemyList.removeAt(e)
+            }
+        }
+        for(b in bulletList.indices.reversed())
+        {
+            if(bulletList[b].isDead())
+            {
+                bulletList[b] = null
+                bulletList.removeAt(b)
+            }
         }
     }
 

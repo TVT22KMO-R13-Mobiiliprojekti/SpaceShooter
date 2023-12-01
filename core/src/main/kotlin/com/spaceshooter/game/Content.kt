@@ -22,6 +22,11 @@ class Content {
         manager.load("bkgd_0.png", Texture::class.java)
         manager.load("bkgd_1.png", Texture::class.java)
         manager.load("ships_void.png", Texture::class.java)
+        manager.load("arcade_space_shooter.png", Texture::class.java)
+        manager.load("beams.png", Texture::class.java)
+        manager.load("M484BulletCollection1.png", Texture::class.java)
+        manager.load("ships_biomech.png", Texture::class.java)
+        manager.load("ships_saucer.png", Texture::class.java)
         manager.finishLoading();
     }
 
