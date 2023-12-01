@@ -150,14 +150,11 @@ class Game {
 
         for (b in bulletList.indices)
         {
-            Gdx.app.log("Collision", "Checking Vector loop works")
-
             for(x in enemyList.indices)
             {
-                Gdx.app.log("Collision", "Checking Vector loop works for enemy")
                 if(enemyList[x].checkCollision(bulletList[b]))
                 {
-                    Gdx.app.log("Collision detected", "Bullet is colliding with enemy")
+                    //Gdx.app.log("Collision detected", "Bullet is colliding with enemy")
                     enemyList[x].kill()
                     bulletList[b].kill()
                 }
@@ -272,6 +269,18 @@ class Game {
 
         //Debug draw for rendering HitBox of player to see where it is
         //batch.draw(bulletImage, player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height)
+
+        //Debug draw for rendering enemies' and bullets' hitboxes.
+        /*
+        for(e in enemyList)
+        {
+            batch.draw(bulletImage, e.getHitBox().x, e.getHitBox().y, e.getHitBox().width, e.getHitBox().height)
+        }
+        for(b in bulletList)
+        {
+            batch.draw(enemyImage, b.getHitBox().x, b.getHitBox().y, b.getHitBox().width, b.getHitBox().height)
+        }
+        */
 
         if(testSprite.texture != null) {
             testSprite.draw(batch)

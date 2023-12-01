@@ -19,8 +19,8 @@ class Enemy() : GameObject() {
     override fun update(deltaTime: Float) {
         position.x += speed.x * deltaTime
         position.y += speed.y * deltaTime
-        hitBox.setCenter(position.x, position.y)
-        sprite.setCenter(position.x, position.y)
+        hitBox.setPosition(position.x, position.y)
+        sprite.setPosition(position.x, position.y)
     }
 
     public fun setType(type: EnemyType)
