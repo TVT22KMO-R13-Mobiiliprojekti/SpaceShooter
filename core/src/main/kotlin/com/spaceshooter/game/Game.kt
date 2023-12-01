@@ -132,7 +132,7 @@ class Game {
         {
 
             var bullet: Bullet = Bullet()
-            bullet.setPos(Vector2(player.getPos().x + player.getArea().x/2, player.getPos().y + player.getArea().y/2))
+            bullet.setPos(Vector2(player.getPos().x + player.getArea().x/2, player.getPos().y))
             bullet.setTexture(bulletImage)
             bullet.setArea(Vector2(32.0f, 8.0f))
             bullet.setHitBoxSize(bullet.getArea().x, bullet.getArea().y)
@@ -269,6 +269,9 @@ class Game {
         {
             batch.draw(e.getTexture(), e.getPos().x, e.getPos().y, e.getArea().x, e.getArea().y)
         }
+
+        //Debug draw for rendering HitBox of player to see where it is
+        //batch.draw(bulletImage, player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height)
 
         if(testSprite.texture != null) {
             testSprite.draw(batch)

@@ -11,9 +11,9 @@ class Player(): GameObject() {
         position.x += speed.x * deltaTime
         position.y += speed.y * deltaTime
 
-        sprite.setPosition(position.x, position.y)
+        sprite.setCenter(position.x, position.y)
 
-        hitBox.setPosition(position.x - hitBox.width/2, position.y - hitBox.height / 2)
+        hitBox.setCenter(position.x, position.y)
 
     }
     override fun render(spriteBatch: SpriteBatch)
