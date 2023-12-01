@@ -9,6 +9,6 @@ class Bullet() : GameObject() {
         position.y += speed.y * deltaTime
 
         hitBox.setPosition(position.x, position.y)
-        sprite.setCenter(position.x, position.y)
+        sprite.setPosition(position.x, position.y)
     }
 }

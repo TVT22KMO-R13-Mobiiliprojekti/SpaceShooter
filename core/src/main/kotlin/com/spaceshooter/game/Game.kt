@@ -268,7 +268,7 @@ class Game {
         }
 
         //Debug draw for rendering HitBox of player to see where it is
-        //batch.draw(bulletImage, player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height)
+        batch.draw(bulletImage, player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height)
 
         //Debug draw for rendering enemies' and bullets' hitboxes.
         /*

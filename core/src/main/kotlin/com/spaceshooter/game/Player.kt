@@ -12,9 +12,7 @@ class Player(): GameObject() {
         position.y += speed.y * deltaTime
 
         sprite.setCenter(position.x, position.y)
-
         hitBox.setCenter(position.x, position.y)
-
     }
     override fun render(spriteBatch: SpriteBatch)
     {
