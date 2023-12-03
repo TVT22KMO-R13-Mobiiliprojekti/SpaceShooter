@@ -27,6 +27,7 @@ class Content {
         manager.load("M484BulletCollection1.png", Texture::class.java)
         manager.load("ships_biomech.png", Texture::class.java)
         manager.load("ships_saucer.png", Texture::class.java)
+        manager.load("healthBar.png", Texture::class.java)
         manager.finishLoading();
     }
 

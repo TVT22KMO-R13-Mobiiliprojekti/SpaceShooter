@@ -56,6 +56,8 @@ class Game {
 
     private val testSprite  by lazy { Sprite() }
 
+    private val hud by lazy { Hud(batch) }
+
     public fun initialize()
     {
         content.initialize()
@@ -253,7 +255,8 @@ class Game {
         batch.draw(background2, bg1XPos, 0f, 1920f, 1080f)
         batch.draw(background2, bg2XPos, 0f, 1920f, 1080f)
         //batch.draw(background1, bg3XPos, 0f, 1920f, 1080f)
-
+        // Render HUD
+        hud.draw()
         //batch.draw(playerImage, rectangle.x, rectangle.y, rectangle.width, rectangle.height)
 
         //batch.draw(playerImage, player.getPos().x, player.getPos().y, player.getArea().x, player.getArea().y)
