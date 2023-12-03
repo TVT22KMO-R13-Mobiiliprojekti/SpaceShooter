@@ -8,7 +8,9 @@ class Bullet() : GameObject() {
         position.x += speed.x * deltaTime
         position.y += speed.y * deltaTime
 
-        hitBox.setPosition(position.x, position.y)
         sprite.setPosition(position.x, position.y)
+        hitBox.setPosition(position.x, position.y)
+
+
     }
 }

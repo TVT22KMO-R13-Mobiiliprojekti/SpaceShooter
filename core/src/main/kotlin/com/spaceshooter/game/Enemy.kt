@@ -9,7 +9,6 @@ enum class EnemyType
 class Enemy() : GameObject() {
 
     private var type : EnemyType = EnemyType.FAST
-    var animationTimer : Float = 0.0f
 
     constructor(type: EnemyType, spawnPosition: Vector2) : this() {
         this.position = spawnPosition
@@ -19,8 +18,12 @@ class Enemy() : GameObject() {
     override fun update(deltaTime: Float) {
         position.x += speed.x * deltaTime
         position.y += speed.y * deltaTime
+
+        sprite.setCenter(position.x, position.y)
         hitBox.setPosition(position.x, position.y)
-        sprite.setPosition(position.x, position.y)
+
+        //println("Sprite Position: (${sprite.x}, ${sprite.y})")
+        //println("Rectangle Position: (${hitBox.x}, ${hitBox.y})")
     }
 
     public fun setType(type: EnemyType)
