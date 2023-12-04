@@ -15,14 +15,14 @@ class Hud(val batch: SpriteBatch) {
     private val healthFrameHeight = 82f // Frame Height
     private val contentWidth = 420f * (playerHealth / 100f)// Health width
     private val contentHeight = 40f // Health height
-    private val frameX = 200f
+    private val frameX = 32f
     private val frameY = 1080f - 82f
     var score = 0
 
     fun draw() {
         // Draw score
         font.data.setScale(fontScale)
-        font.draw(batch, "Score: $score", 20f, 1080f - 20f)
+        font.draw(batch, "Score: $score", healthFrameWidth + 64f, 1080f - 20f)
 
         // Draw healthbar frame first
         batch.draw(
