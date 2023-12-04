@@ -14,12 +14,12 @@ class Hud(val batch: SpriteBatch) {
     private val maxHealthWidth = 1000f //
     private val healthBarHeight = 800f
     private var playerHealth = 100f //
-    private var scores = 0
+    var score = 0
 
     fun draw() {
         // Draw score
         font.data.setScale(fontScale)
-        font.draw(batch, "Score: $scores", 20f, Gdx.graphics.height - 20f)
+        font.draw(batch, "Score: $score", 20f, Gdx.graphics.height - 20f)
 
         // Draw healthbar
         batch.draw(

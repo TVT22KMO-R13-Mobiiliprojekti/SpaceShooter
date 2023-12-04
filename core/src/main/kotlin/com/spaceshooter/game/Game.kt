@@ -33,33 +33,32 @@ class Game {
 
     private val playerImage by lazy { Texture("player.png") }
 
-    private val bulletImage by lazy { Texture("bullet.png")}
+    private val bulletImage by lazy { Texture("bullet.png") }
 
     private val enemyImage by lazy { Texture("enemy.png") }
 
     private val player: Player = Player()
-    private var bulletList : Vector<Bullet> = Vector<Bullet>()
-    private var enemyList : Vector<Enemy> = Vector<Enemy>()
+    private var bulletList: Vector<Bullet> = Vector<Bullet>()
+    private var enemyList: Vector<Enemy> = Vector<Enemy>()
     //private var enemyBulletList : ArrayList<Bullet> = TODO()
 
     //private var rectangle: Rectangle = Rectangle()
 
-    private var enemyTimer : Float = 0.0f
+    private var enemyTimer: Float = 0.0f
 
-    private var bulletTimer : Float = 0.0f
+    private var bulletTimer: Float = 0.0f
 
-    private var touchStarted : Boolean = false
+    private var touchStarted: Boolean = false
 
-    private var touchStartPos : Vector3 = Vector3(0.0f,0.0f, 0.0f)
+    private var touchStartPos: Vector3 = Vector3(0.0f, 0.0f, 0.0f)
 
-    private var content : Content = Content()
+    private var content: Content = Content()
 
-    private val testSprite  by lazy { Sprite() }
+    private val testSprite by lazy { Sprite() }
 
     private val hud by lazy { Hud(batch) }
 
-    public fun initialize()
-    {
+    public fun initialize() {
         content.initialize()
         // create the camera and the SpriteBatch
         camera = OrthographicCamera()
@@ -75,8 +74,7 @@ class Game {
     }
 
 
-    public fun update(dt: Float)
-    {
+    public fun update(dt: Float) {
 
         content.getAssetManager().update()
         var deltaTime = Gdx.graphics.deltaTime
@@ -84,8 +82,7 @@ class Game {
 
         // process user input
         if (Gdx.input.isTouched) {
-            if(!touchStarted)
-            {
+            if (!touchStarted) {
                 touchStartPos = Vector3(Gdx.input.x.toFloat(), Gdx.input.y.toFloat(), 0.0f)
                 camera!!.unproject(touchStartPos)
                 touchStarted = true
@@ -101,8 +98,7 @@ class Game {
             var deltaX = touchPos.x - touchStartPos.x
             var angle = atan2(deltaY, deltaX)
 
-            if(distance >= 45000.0f)
-            {
+            if (distance >= 45000.0f) {
                 distance = 45000.0f
             }
 
@@ -114,12 +110,15 @@ class Game {
             //Gdx.app.log("ANGLE IN RAD", "Angle : $angle")
             //Gdx.app.log("DISTANCE : ", "DISTANCE : $distance")
 
-            player.setSpeed(Vector2(distance * speedX * speedMultiplier, distance * speedY * 1.2f * speedMultiplier ))
-        }
-        else
-        {
+            player.setSpeed(
+                Vector2(
+                    distance * speedX * speedMultiplier,
+                    distance * speedY * 1.2f * speedMultiplier
+                )
+            )
+        } else {
             touchStarted = false
-            player.setSpeed(Vector2(0.0f,0.0f))
+            player.setSpeed(Vector2(0.0f, 0.0f))
         }
         if (Gdx.input.isKeyPressed(Keys.LEFT)) {
             //rectangle.x -= 200 * Gdx.graphics.deltaTime
@@ -130,11 +129,10 @@ class Game {
 
         bulletTimer += deltaTime
 
-        if(bulletTimer >= 0.5f)
-        {
+        if (bulletTimer >= 0.5f) {
 
             var bullet: Bullet = Bullet()
-            bullet.setPos(Vector2(player.getPos().x + player.getArea().x/2, player.getPos().y))
+            bullet.setPos(Vector2(player.getPos().x + player.getArea().x / 2, player.getPos().y))
             bullet.setTexture(bulletImage)
             bullet.setArea(Vector2(32.0f, 8.0f))
             bullet.setHitBoxSize(bullet.getArea().x, bullet.getArea().y)
@@ -145,20 +143,17 @@ class Game {
             bulletTimer = 0.0f
         }
 
-        for (b in bulletList)
-        {
+        for (b in bulletList) {
             b.update(deltaTime)
         }
 
-        for (b in bulletList.indices)
-        {
-            for(x in enemyList.indices)
-            {
-                if(enemyList[x].checkCollision(bulletList[b]))
-                {
+        for (b in bulletList.indices) {
+            for (x in enemyList.indices) {
+                if (enemyList[x].checkCollision(bulletList[b])) {
                     //Gdx.app.log("Collision detected", "Bullet is colliding with enemy")
                     enemyList[x].kill()
                     bulletList[b].kill()
+                    hud.score += 10
                 }
             }
         }
@@ -188,13 +183,15 @@ class Game {
             val enemySpeed = 50f // Adjust the speed
             enemy.setSpeed(Vector2(directionLeft.x * enemySpeed, directionLeft.y * enemySpeed))
 
-            Gdx.app.log("Enemy spawned to location: ","X:" + enemy.getPos().x + " Y: " + enemy.getPos().y)
+            Gdx.app.log(
+                "Enemy spawned to location: ",
+                "X:" + enemy.getPos().x + " Y: " + enemy.getPos().y
+            )
             enemyList.add(enemy)
             enemyTimer = 0.0f
         }
 
-        for (e in enemyList)
-        {
+        for (e in enemyList) {
             e.update(deltaTime)
             //Gdx.app.log("Enemy hitbox info: ", "Pos X: " + e.getHitBox().x + " Pos Y: " + e.getHitBox().y + " Hitbox height : " + e.getHitBox().height + " Hitbox width: " + e.getHitBox().width)
 
@@ -222,30 +219,25 @@ class Game {
         }
 
         //Removal of dead GameObjects:
-        for(e in enemyList.indices.reversed())
-        {
-            if(enemyList[e].isDead())
-            {
+        for (e in enemyList.indices.reversed()) {
+            if (enemyList[e].isDead()) {
                 enemyList[e] = null
                 enemyList.removeAt(e)
             }
         }
-        for(b in bulletList.indices.reversed())
-        {
-            if(bulletList[b].isDead())
-            {
+        for (b in bulletList.indices.reversed()) {
+            if (bulletList[b].isDead()) {
                 bulletList[b] = null
                 bulletList.removeAt(b)
             }
         }
     }
 
-    public fun draw(dt: Float)
-    {
+    public fun draw(dt: Float) {
         ScreenUtils.clear(0.0f, 0.0f, 0.0f, 1.0f);
         camera?.update();
 
-        if(this.camera != null) {
+        if (this.camera != null) {
             batch.setProjectionMatrix(this.camera?.combined);
         }
 
@@ -260,18 +252,22 @@ class Game {
         //batch.draw(playerImage, rectangle.x, rectangle.y, rectangle.width, rectangle.height)
 
         //batch.draw(playerImage, player.getPos().x, player.getPos().y, player.getArea().x, player.getArea().y)
-        for (b in bulletList)
-        {
+        for (b in bulletList) {
             batch.draw(b.getTexture(), b.getPos().x, b.getPos().y, b.getArea().x, b.getArea().y)
         }
 
-        for (e in enemyList)
-        {
+        for (e in enemyList) {
             batch.draw(e.getTexture(), e.getPos().x, e.getPos().y, e.getArea().x, e.getArea().y)
         }
 
         //Debug draw for rendering HitBox of player to see where it is
-        batch.draw(bulletImage, player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height)
+        batch.draw(
+            bulletImage,
+            player.getHitBox().x,
+            player.getHitBox().y,
+            player.getHitBox().width,
+            player.getHitBox().height
+        )
 
         //Debug draw for rendering enemies' and bullets' hitboxes.
         /*
@@ -285,7 +281,7 @@ class Game {
         }
         */
 
-        if(testSprite.texture != null) {
+        if (testSprite.texture != null) {
             testSprite.draw(batch)
         }
 
