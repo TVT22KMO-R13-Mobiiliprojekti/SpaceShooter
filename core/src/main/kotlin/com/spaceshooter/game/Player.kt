@@ -16,13 +16,13 @@ class Player(): GameObject() {
 
         limitMovement()
     }
-    override fun render(spriteBatch: SpriteBatch)
-    {
-        sprite.draw(spriteBatch)
+    //override fun render(spriteBatch: SpriteBatch)
+    //{
+    //   sprite.draw(spriteBatch)
         //Gdx.app.log("SPRITE INFO: ", "Position x: " + sprite.x + " Position y: " + sprite.y + "Sprite size : " + sprite.width)
         //Gdx.app.log("SPRITE INFO: ", "Texture height: " + sprite.texture.height)
         //Gdx.app.log("Texture Info", "Width: ${sprite.texture.depth}, Height: ${sprite.texture.height}")
-    }
+    //}
 
     private fun limitMovement()
     {

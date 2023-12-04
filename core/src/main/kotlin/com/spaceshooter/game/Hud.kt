@@ -11,18 +11,18 @@ class Hud(val batch: SpriteBatch) {
     private var playerHealth = 100f // Max health 100
     private val healthBarFrameTexture: Texture = Texture("healthBar.png") // Frame picture
     private val healthContentTexture: Texture = Texture("healthContent.png") // Healthbar content picture
-    private val healthFrameWidth = 2400f // Frame Width
-    private val healthFrameHeight = 800f // Frame Height
-    private val contentWidth = 450f * (playerHealth / 100f)// Health width
+    private val healthFrameWidth = 440f // Frame Width
+    private val healthFrameHeight = 82f // Frame Height
+    private val contentWidth = 420f * (playerHealth / 100f)// Health width
     private val contentHeight = 40f // Health height
-    private val frameX = -500f
-    private val frameY = Gdx.graphics.height - 500f
+    private val frameX = 200f
+    private val frameY = 1080f - 82f
     var score = 0
 
     fun draw() {
         // Draw score
         font.data.setScale(fontScale)
-        font.draw(batch, "Score: $score", 20f, Gdx.graphics.height - 20f)
+        font.draw(batch, "Score: $score", 20f, 1080f - 20f)
 
         // Draw healthbar frame first
         batch.draw(
@@ -36,8 +36,8 @@ class Hud(val batch: SpriteBatch) {
 //         Draw healthbar content within the frame
         batch.draw(
             healthContentTexture,
-            frameX + 950f,
-            frameY + 425,
+            frameX + 10f,
+            frameY + 20f,
             contentWidth,
             contentHeight
         )

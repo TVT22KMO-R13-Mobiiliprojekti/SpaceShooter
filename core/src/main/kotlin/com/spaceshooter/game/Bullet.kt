@@ -1,5 +1,7 @@
 package com.spaceshooter.game
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
+
 class Bullet() : GameObject() {
 
 

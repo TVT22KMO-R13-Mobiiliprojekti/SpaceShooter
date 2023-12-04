@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture
 
 
 class Content {
-    var manager = AssetManager()
+    private var manager = AssetManager()
 
     fun initialize()
     {
@@ -14,7 +14,7 @@ class Content {
         loadMusic()
     }
 
-    fun loadTextures()
+    private fun loadTextures()
     {
         manager.load("player.png", Texture::class.java)
         manager.load("enemy.png", Texture::class.java)
@@ -27,7 +27,7 @@ class Content {
         manager.load("M484BulletCollection1.png", Texture::class.java)
         manager.load("ships_biomech.png", Texture::class.java)
         manager.load("ships_saucer.png", Texture::class.java)
-        manager.finishLoading();
+        manager.finishLoading()
     }
 
     fun loadSounds()
@@ -57,7 +57,7 @@ class Content {
             //If texture hasn't loaded, try to load it and return it
             val load = manager.load(texturePath, Texture::class.java)
 
-            manager.finishLoading();
+            manager.finishLoading()
 
             val tex = manager.get(texturePath, Texture::class.java)
 
