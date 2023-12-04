@@ -17,12 +17,15 @@ class Hud(val batch: SpriteBatch) {
     private val contentHeight = 40f // Health height
     private val frameX = 32f
     private val frameY = 1080f - 82f
-    var score = 0
+    private var SCREEN_HEIGHT = 1080f
+    private var SCREEN_WIDTH = 1920f
+    private var score: Int = 0
+    private var scoreText = "Score: 0"
 
     fun draw() {
         // Draw score
         font.data.setScale(fontScale)
-        font.draw(batch, "Score: $score", healthFrameWidth + 64f, 1080f - 20f)
+        font.draw(batch, scoreText, SCREEN_WIDTH/2 - 128f, SCREEN_HEIGHT - 20f)
 
         // Draw healthbar frame first
         batch.draw(
@@ -45,6 +48,12 @@ class Hud(val batch: SpriteBatch) {
 
     fun updateHealth(health: Float) {
         playerHealth = health
+    }
+
+    fun addScore(score: Int)
+    {
+        this.score += score
+        this.scoreText = "Score: " + this.score.toString()
     }
 
     fun dispose() {

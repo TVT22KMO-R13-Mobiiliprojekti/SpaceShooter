@@ -153,7 +153,8 @@ class Game {
                     //Gdx.app.log("Collision detected", "Bullet is colliding with enemy")
                     enemyList[x].kill()
                     bulletList[b].kill()
-                    hud.score += 10
+                    //hud.score += 10
+                    hud.addScore(10)
                 }
             }
         }
