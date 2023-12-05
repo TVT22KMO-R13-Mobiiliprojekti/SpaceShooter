@@ -7,15 +7,10 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.MathUtils.*
-import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.ScreenUtils
-import java.awt.geom.Area
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.random.Random
-
 
 class Game {
 
@@ -24,7 +19,7 @@ class Game {
     private val batch by lazy { SpriteBatch() }
     private val image by lazy { Texture("libgdx.png") }
 
-    private val background1 by lazy { Texture("bkgd_0.png") }
+    //private val background1 by lazy { Texture("bkgd_0.png") }
     private val background2 by lazy { Texture("bkgd_1.png") }
 
     private var bg1XPos = 0f
@@ -37,7 +32,6 @@ class Game {
 
     private val enemyImage by lazy { Texture("enemy.png") }
 
-    private val player: Player = Player()
     private var bulletList: Vector<Bullet> = Vector<Bullet>()
     private var enemyList: Vector<Enemy> = Vector<Enemy>()
     //private var enemyBulletList : ArrayList<Bullet> = TODO()
@@ -58,6 +52,8 @@ class Game {
 
     private val hud by lazy { Hud(batch) }
 
+    private val player: Player = Player()
+
     public fun initialize() {
         content.initialize()
         // create the camera and the SpriteBatch
@@ -70,6 +66,8 @@ class Game {
 
         player.setTexture(content.getTexture("player.png"))
 
+        player.setHud(hud)
+
         testSprite.texture = playerImage
     }
 
@@ -79,6 +77,15 @@ class Game {
         content.getAssetManager().update()
         var deltaTime = Gdx.graphics.deltaTime
         //Game update logic goes here
+        player.update(Gdx.graphics.deltaTime)
+
+        if (player.getPlayerHealth() <= 0) {
+            // Perform game-over logic here
+            // For now, let's log a message and stop the game
+            Gdx.app.log("Game Over", "Player health reached 0. Game Over!")
+            Gdx.app.exit() // Close the application
+            // For example, you can introduce a boolean flag to indicate the game is over.
+        }
 
         // process user input
         if (Gdx.input.isTouched) {
@@ -153,7 +160,8 @@ class Game {
                     //Gdx.app.log("Collision detected", "Bullet is colliding with enemy")
                     enemyList[x].kill()
                     bulletList[b].kill()
-                    hud.score += 10
+                    //hud.score += 10
+                    hud.addScore(10)
                 }
             }
         }
@@ -193,8 +201,8 @@ class Game {
 
         for (e in enemyList) {
             e.update(deltaTime)
-            //Gdx.app.log("Enemy hitbox info: ", "Pos X: " + e.getHitBox().x + " Pos Y: " + e.getHitBox().y + " Hitbox height : " + e.getHitBox().height + " Hitbox width: " + e.getHitBox().width)
-
+            //Gdx.app.log("Enemy hitbox info", "Pos X: ${e.getHitBox().x}, Pos Y: ${e.getHitBox().y}, Hitbox height: ${e.getHitBox().height}, Hitbox width: ${e.getHitBox().width}")
+            player.checkCollisionWithEnemy(e)
         }
 
         player.update(deltaTime)
@@ -247,6 +255,7 @@ class Game {
         batch.draw(background2, bg1XPos, 0f, 1920f, 1080f)
         batch.draw(background2, bg2XPos, 0f, 1920f, 1080f)
         //batch.draw(background1, bg3XPos, 0f, 1920f, 1080f)
+        player.render(batch)
         // Render HUD
         hud.draw()
         //batch.draw(playerImage, rectangle.x, rectangle.y, rectangle.width, rectangle.height)
