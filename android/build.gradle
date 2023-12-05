@@ -1,5 +1,12 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+//apply plugin: 'com.android.application'
+//apply plugin: 'kotlin-android'
+
+plugins {
+  id 'com.android.application'
+  id 'org.jetbrains.kotlin.android'
+  // Add the Google services Gradle plugin
+  id 'com.google.gms.google-services'
+}
 
 android {
   compileSdk 34
@@ -68,6 +75,15 @@ dependencies {
   natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
   natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
   natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
+  // Import the Firebase BoM
+  implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
+  implementation("com.google.firebase:firebase-database-ktx:20.3.0")
+  // TODO: Add the dependencies for Firebase products you want to use
+  // See https://firebase.google.com/docs/android/setup#available-libraries
+  // For example, add the dependencies for Firebase Authentication and Cloud Firestore
+  implementation("com.google.firebase:firebase-auth")
+  implementation("com.google.firebase:firebase-firestore")
+
 
 }
 
