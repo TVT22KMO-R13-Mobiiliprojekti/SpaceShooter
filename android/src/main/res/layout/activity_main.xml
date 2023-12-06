@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/menu_bg"
+    android:background="@drawable/menu_bg_2"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -23,19 +23,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/space_quest"
-            android:shadowColor="#000000"
-            android:shadowDx="2.5"
-            android:shadowDy="2.5"
-            android:shadowRadius="5"
-            android:text="SpaceShooter"
-            android:textAlignment="center"
 
+            android:rotationX="25"
+            android:text="SpaceShooter"
+
+            android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="36sp" />
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="40dp" />
+            android:layout_height="60dp" />
 
         <Button
             android:id="@+id/btn_game"
@@ -59,7 +57,7 @@
             android:layout_gravity="center"
             android:background="@drawable/rounded_button"
             android:fontFamily="@font/space_quest"
-            android:text="Highscore"
+            android:text="High score"
             android:textColor="#FFFFFF"
             android:textSize="18sp" />
 

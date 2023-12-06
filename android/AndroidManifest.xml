@@ -23,12 +23,11 @@ xmlns:tools="http://schemas.android.com/tools">
     <activity
         android:name="com.spaceshooter.game.SettingsActivity"
         android:screenOrientation="sensorLandscape"
+        android:exported="false" />
+    <activity
+        android:name="com.spaceshooter.game.HighscoreActivity"
         android:exported="false"
-        />
-    <activity android:name ="com.spaceshooter.game.HighscoreActivity"
-        android:exported="false"
-        android:screenOrientation="sensorLandscape"
-        />
+        android:screenOrientation="sensorLandscape" />
     <activity
         android:name=".android.AndroidLauncher"
         android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout"
