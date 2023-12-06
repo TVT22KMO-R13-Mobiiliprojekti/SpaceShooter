@@ -32,32 +32,3 @@ class HighScoreAdapter(options: FirestoreRecyclerOptions<ScoreData>) :
     }
 }
 
-
-
-/*import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import android.view.View
-import android.widget.TextView
-
-class HighScoreAdapter(private val scoreList: List<ScoreData>) : RecyclerView.Adapter<HighScoreAdapter.SoreViewHolder>() {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SoreViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_highscore, parent, false)
-        return SoreViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: SoreViewHolder, position: Int) {
-        val memo = scoreList[position]
-
-        holder.bind(memo, position)
-    }
-
-    override fun getItemCount(): Int {
-        return scoreList.size
-    }
-    class SoreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textViewNickname: TextView = itemView.findViewById(R.id.textViewNickname)
-        val textViewScore: TextView = itemView.findViewById(R.id.textViewScore)
-    }
-}*/
