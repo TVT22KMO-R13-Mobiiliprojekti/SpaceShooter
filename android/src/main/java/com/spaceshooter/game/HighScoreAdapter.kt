@@ -18,17 +18,16 @@ class HighScoreAdapter(options: FirestoreRecyclerOptions<ScoreData>) :
     }
 
     override fun onBindViewHolder(holder: ScoreViewHolder, position: Int, model: ScoreData) {
-        holder.bind(model, position)
+        holder.bind(model)
     }
 
     class ScoreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textViewNickname: TextView = itemView.findViewById(R.id.textViewNickname)
         val textViewScore: TextView = itemView.findViewById(R.id.textViewScore)
 
-        fun bind(scoreData: ScoreData, position: Int) {
+        fun bind(scoreData: ScoreData) {
             textViewNickname.text = scoreData.nickname
             textViewScore.text = scoreData.score.toString()
         }
     }
 }
-

@@ -3,6 +3,7 @@ package com.spaceshooter.game
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -13,12 +14,8 @@ import com.google.firebase.firestore.Query
 
 class HighscoreActivity : AppCompatActivity() {
 
-    val db = Firebase.firestore
-
     private lateinit var btnReturn: Button
-
     private lateinit var hsScreen: RecyclerView
-
     private lateinit var highScoreAdapter: HighScoreAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,31 +28,34 @@ class HighscoreActivity : AppCompatActivity() {
         // Initialize Firestore
         val db = FirebaseFirestore.getInstance()
 
-        // Create a query to get the top 10 high scores
+        // Create a query to get the first 10 high scores
         val query = db.collection("highscores")
             .orderBy("score", Query.Direction.DESCENDING)
             .limit(10)
 
         // Set up RecyclerView and attach the adapter
-        hsScreen.layoutManager = LinearLayoutManager(this)
+        hsScreen.layoutManager = GridLayoutManager(this,2)
+
+        // Create options for the first 10 scores
         val options = FirestoreRecyclerOptions.Builder<ScoreData>()
             .setQuery(query, ScoreData::class.java)
             .build()
 
-        highScoreAdapter = HighScoreAdapter(options) // This is where you were missing the 'options'
+        // Create and set the adapter
+        highScoreAdapter = HighScoreAdapter(options)
         hsScreen.adapter = highScoreAdapter
 
         btnReturn.setOnClickListener {
             finish()
         }
     }
-    // Start listening to the adapter when the activity starts
+
+    // Start and stop listening to the adapter when the activity starts and stops
     override fun onStart() {
         super.onStart()
         highScoreAdapter.startListening()
     }
 
-    // Stop listening to the adapter when the activity stops
     override fun onStop() {
         super.onStop()
         highScoreAdapter.stopListening()

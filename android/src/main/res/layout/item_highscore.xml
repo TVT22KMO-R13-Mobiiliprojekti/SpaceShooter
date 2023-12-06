@@ -1,22 +1,50 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:weightSum="1">
 
     <TextView
         android:id="@+id/textViewNickname"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="0.5"
+        android:fontFamily="@font/space_quest"
+        android:textColor="#FFFFFF"
         android:textSize="24sp"
-        android:fontFamily="@font/space_quest"/>
+        tools:text="testi" />
 
     <TextView
         android:id="@+id/textViewScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:fontFamily="@font/space_quest"
+        android:textColor="#FFFFFF"
         android:textSize="24sp"
-        android:fontFamily="@font/space_quest"/>
+        tools:text="123" />
+
+    <TextView
+        android:id="@+id/textViewNickname2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:fontFamily="@font/space_quest"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        tools:text="testi2"
+        tools:visibility="gone" />
+
+    <TextView
+        android:id="@+id/textViewScore2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:fontFamily="@font/space_quest"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        tools:text="345"
+        tools:visibility="gone" />
 </LinearLayout>
