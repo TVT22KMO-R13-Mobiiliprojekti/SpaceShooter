@@ -2,6 +2,7 @@ package com.spaceshooter.game
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
@@ -16,11 +17,15 @@ open class GameObject() {
     private lateinit var texture : Texture
     internal var textureRegions : Vector<TextureRegion> = Vector<TextureRegion>()
     internal var animationTimer: Float = 0.0f
-    internal var animationInterval: Float = 0.2f
+    internal var animationInterval: Float = 0.5f
+    internal var currentFrame: Int = 0
+    internal var frameCount : Int = 0
+
 
     internal var position: Vector2 = Vector2(0.0f, 0.0f)
     internal var size: Vector2 = Vector2(0.0f, 0.0f)
     internal var speed: Vector2 = Vector2(400.0f, 0.0f)
+    internal var rotation: Float = 0.0f
     internal var hitBox : Rectangle = Rectangle()
     internal var isDead : Boolean = false
 
@@ -28,6 +33,11 @@ open class GameObject() {
     open fun render(spriteBatch: SpriteBatch)
     {
         sprite.draw(spriteBatch)
+    }
+
+    open fun updateAnimation(deltaTime: Float)
+    {
+
     }
 
     open fun setTexture(texture: Texture)
@@ -46,7 +56,7 @@ open class GameObject() {
 
     fun addAnimationFrame(posX: Int, posY: Int, width: Int, height: Int)
     {
-        var texRegion : TextureRegion = TextureRegion(this.texture, posX, posY, width, height)
+        var texRegion: TextureRegion = TextureRegion(this.texture, posX, posY, width, height)
 
         textureRegions.add(texRegion)
     }

@@ -1,5 +1,6 @@
 package com.spaceshooter.game
 
+import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -12,7 +13,7 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.ScreenUtils
 import java.util.*
 
-class Game {
+class Game : ApplicationAdapter() {
 
     var camera: OrthographicCamera? = null
 
@@ -182,8 +183,9 @@ class Game {
 
             var enemy: Enemy = Enemy()
             enemy.setPos(spawnPoint)
-            enemy.setTexture(enemyImage)
-            enemy.setArea(Vector2(128f, 64f))
+            enemy.setTexture(content.getTexture("ships_void.png"))
+            enemy.setType(EnemyType.FAST)
+            enemy.setArea(Vector2(64f, 160f))
             enemy.setHitBoxSize(enemy.getArea().x, enemy.getArea().y)
 
             val directionLeft = Vector2(-1f, 0f) // Left direction
@@ -266,7 +268,8 @@ class Game {
         }
 
         for (e in enemyList) {
-            batch.draw(e.getTexture(), e.getPos().x, e.getPos().y, e.getArea().x, e.getArea().y)
+            //batch.draw(e.getTexture(), e.getPos().x, e.getPos().y, e.getArea().x, e.getArea().y)
+            e.render(batch)
         }
 
         //Debug draw for rendering HitBox of player to see where it is

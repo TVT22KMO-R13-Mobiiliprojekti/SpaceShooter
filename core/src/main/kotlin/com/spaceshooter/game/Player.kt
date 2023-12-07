@@ -72,14 +72,14 @@ class Player(): GameObject() {
 
     fun setPlayerHealth(health: Float) {
         playerHealth = health
-        Gdx.app.log("Player Health", "Player health set to: $health")
+        //Gdx.app.log("Player Health", "Player health set to: $health")
         hud?.updateHealthBar() // Call the updateHealthBar function when the player's health is set
     }
 
 
     fun getPlayerHealth(): Float {
 
-        Gdx.app.log("Player Health", "Current player health: $playerHealth")
+        //Gdx.app.log("Player Health", "Current player health: $playerHealth")
 
         return playerHealth
     }
