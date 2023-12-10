@@ -4,7 +4,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 
 
-class Content {
+object Content {
     private var manager = AssetManager()
 
     fun initialize()
@@ -27,17 +27,18 @@ class Content {
         manager.load("M484BulletCollection1.png", Texture::class.java)
         manager.load("ships_biomech.png", Texture::class.java)
         manager.load("ships_saucer.png", Texture::class.java)
+        manager.load("animbullet.png", Texture::class.java)
         manager.finishLoading()
     }
 
     fun loadSounds()
     {
-
+        manager.finishLoading()
     }
 
     fun loadMusic()
     {
-
+        manager.finishLoading()
     }
 
     fun getAssetManager() : AssetManager
@@ -64,6 +65,4 @@ class Content {
             return tex
         }
     }
-
-
 }

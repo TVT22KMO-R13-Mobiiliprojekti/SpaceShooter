@@ -2,8 +2,7 @@ package com.spaceshooter.game
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Vector2
-import kotlin.math.abs
-import kotlin.math.cos
+import java.util.*
 
 enum class EnemyType
 {
@@ -12,6 +11,12 @@ enum class EnemyType
 class Enemy() : GameObject() {
 
     private var type : EnemyType = EnemyType.FAST
+
+    private var health : Int = 10
+    private var shootingInterval: Float = 2.5f
+    private var shootTimer: Float = 0.0f
+
+    private var enemyBullets: Vector<Bullet> = Vector<Bullet>()
 
     constructor(type: EnemyType, spawnPosition: Vector2) : this() {
         this.position = spawnPosition
@@ -23,80 +28,140 @@ class Enemy() : GameObject() {
         position.y += speed.y * deltaTime
 
         sprite.setPosition(position.x, position.y)
-        //hitBox.setPosition(position.x, position.y)
+        updateHitBox()
+        updateAnimation(deltaTime)
 
-        updateRectanglePosition()
-
-        animationTimer += deltaTime
-        if(animationTimer >= animationInterval)
+        when(type)
         {
-            if (currentFrame < frameCount - 1) {
-                currentFrame += 1
-            } else {
-                currentFrame = 0
-            }
-            animationTimer = 0.0f
-
-            // Update the Sprite's texture region
-            val newRegion = textureRegions[currentFrame]
-            sprite.setRegion(newRegion)
-
-
-            //sprite.setRegion(textureRegions[currentFrame])
+            EnemyType.FAST ->  fastUpdate(deltaTime)
+            EnemyType.SHOOTER ->  shooterUpdate(deltaTime)
+            EnemyType.TANK ->  tankUpdate(deltaTime)
         }
-
-        println("Sprite Position: (${sprite.x}, ${sprite.y})")
-        println("Rectangle Position: (${hitBox.x}, ${hitBox.y})")
     }
 
     override fun render(spriteBatch: SpriteBatch) {
-
         sprite.draw(spriteBatch)
+
+        if(enemyBullets.isNotEmpty())
+        {
+            for(e in enemyBullets)
+            {
+                e.render(spriteBatch)
+            }
+        }
     }
 
     public fun setType(type: EnemyType)
     {
         this.type = type
-
         textureRegions.clear()
-
         var posX : Int; var posY : Int; var sizeX : Int; var sizeY : Int;
+        animationInterval = 0.1f
 
-        if(type == EnemyType.FAST)
+        if(type == EnemyType.TANK)
         {
-            posX = 0
+            health = 100
+            posX = 128
             posY = 0
-            sizeX = 32
+            sizeX = 48
             sizeY = 80
             frameCount = 4
+            setArea(Vector2(192f, 320f))
             for (i in 0 until frameCount) {
                 addAnimationFrame(posX + sizeX * i, posY, sizeX, sizeY)
             }
-
+            val newRegion = textureRegions[currentFrame]
+            sprite.setRegion(newRegion)
+            rotation = 90.0f
+        }
+        else if(type == EnemyType.FAST)
+        {
+            health = 10
+            posX = 0
+            posY = 440
+            sizeX = 16
+            sizeY = 38
+            frameCount = 4
+            setArea(Vector2(32f, 76f))
+            for (i in 0 until frameCount) {
+                addAnimationFrame(posX + sizeX * i, posY, sizeX, sizeY)
+            }
             val newRegion = textureRegions[currentFrame]
             sprite.setRegion(newRegion)
 
             rotation = 90.0f
+        }
+        else if(type == EnemyType.SHOOTER)
+        {
+            health = 30
+            posX = 0
+            posY = 568
+            sizeX = 32
+            sizeY = 54
+            frameCount = 4
+            setArea(Vector2(96f, 160f))
+            for (i in 0 until frameCount) {
+                addAnimationFrame(posX + sizeX * i, posY, sizeX, sizeY)
+            }
+            val newRegion = textureRegions[currentFrame]
+            sprite.setRegion(newRegion)
+            rotation = 90.0f
+        }
+        sprite.rotate(rotation)
+        updateHitBox()
+    }
 
-            sprite.rotate(rotation)
-
-            updateRectanglePosition()
+    fun damage(damage: Int)
+    {
+        health -= damage
+        if(health <= 0.0f)
+        {
+            kill()
         }
     }
 
-    private fun updateRectanglePosition() {
-        // Update Rectangle position to match the rotated sprite
-        val spriteCenter = Vector2(sprite.x + sprite.originX, sprite.y + sprite.originY)
-        hitBox.setCenter(spriteCenter.x, spriteCenter.y)
+    fun fastUpdate(deltaTime: Float)
+    {
 
-        val rotatedWidth = abs(sprite.width * Math.cos(Math.toRadians(sprite.rotation.toDouble()))) +
-            abs(sprite.height * Math.sin(Math.toRadians(sprite.rotation.toDouble())))
+    }
 
-        val rotatedHeight = abs(sprite.width * Math.sin(Math.toRadians(sprite.rotation.toDouble()))) +
-            abs(sprite.height * cos(Math.toRadians(sprite.rotation.toDouble())))
+    fun shooterUpdate(deltaTime: Float)
+    {
+        shootTimer += deltaTime
 
-        // Update Rectangle size to match the rotated sprite
-        hitBox.setSize(rotatedWidth.toFloat(), rotatedHeight.toFloat())
+        if(shootTimer >= shootingInterval)
+        {
+            var bullet: Bullet = Bullet()
+
+            bullet.setTexture(Content.getTexture("animbullet.png"))
+            bullet.initialize()
+            bullet.setArea(Vector2(8.0f, 8.0f))
+            bullet.setPos(
+                Vector2(
+                    this.getPos().x - this.getArea().x / 2,
+                    this.getPos().y + this.getArea().y / 2 - bullet.getArea().y/2)
+            )
+            bullet.setHitBoxSize(bullet.getArea().x, bullet.getArea().y)
+
+            bullet.setSpeed(Vector2(-600.0f, 0.0f))
+            //bullet.setSpeed(Vector2(400.0f, 100.0f - random(200.0f)))
+            enemyBullets.add(bullet)
+            shootTimer = 0.0f
+        }
+
+        if(enemyBullets.isNotEmpty())
+        {
+            for(e in enemyBullets)
+            {
+                e.update(deltaTime)
+            }
+        }
+
+    }
+
+    fun tankUpdate(deltaTime: Float)
+    {
+
     }
 
 }

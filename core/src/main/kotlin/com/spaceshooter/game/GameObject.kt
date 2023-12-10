@@ -37,7 +37,20 @@ open class GameObject() {
 
     open fun updateAnimation(deltaTime: Float)
     {
+        animationTimer += deltaTime
+        if(animationTimer >= animationInterval)
+        {
+            if (currentFrame < frameCount - 1) {
+                currentFrame += 1
+            } else {
+                currentFrame = 0
+            }
+            animationTimer = 0.0f
 
+            // Update the Sprite's texture region
+            val newRegion = textureRegions[currentFrame]
+            sprite.setRegion(newRegion)
+        }
     }
 
     open fun setTexture(texture: Texture)
@@ -128,5 +141,20 @@ open class GameObject() {
     fun isDead(): Boolean
     {
         return this.isDead
+    }
+
+    internal fun updateHitBox() {
+        // Update Rectangle position and size to match the rotated sprite
+        val spriteCenter = Vector2(sprite.x + sprite.originX, sprite.y + sprite.originY)
+        hitBox.setCenter(spriteCenter.x, spriteCenter.y)
+
+        val rotatedWidth = kotlin.math.abs(sprite.width * cos(toRadians(sprite.rotation.toDouble()))) +
+            kotlin.math.abs(sprite.height * sin(toRadians(sprite.rotation.toDouble())))
+
+        val rotatedHeight = kotlin.math.abs(sprite.width * kotlin.math.sin(toRadians(sprite.rotation.toDouble()))) +
+            kotlin.math.abs(sprite.height * kotlin.math.cos(toRadians(sprite.rotation.toDouble())))
+
+        // Update Rectangle size to match the rotated sprite
+        hitBox.setSize(rotatedWidth.toFloat(), rotatedHeight.toFloat())
     }
 }

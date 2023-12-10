@@ -17,6 +17,9 @@ class Game : ApplicationAdapter() {
 
     var camera: OrthographicCamera? = null
 
+    private val RESOLUTIONX: Int = 1920
+    private val RESOLUTIONY: Int = 1080
+
     private val batch by lazy { SpriteBatch() }
     private val image by lazy { Texture("libgdx.png") }
 
@@ -37,8 +40,7 @@ class Game : ApplicationAdapter() {
     private var enemyList: Vector<Enemy> = Vector<Enemy>()
     //private var enemyBulletList : ArrayList<Bullet> = TODO()
 
-    //private var rectangle: Rectangle = Rectangle()
-
+    private var enemySpawnInterval : Float = 3.0f
     private var enemyTimer: Float = 0.0f
 
     private var bulletTimer: Float = 0.0f
@@ -47,7 +49,7 @@ class Game : ApplicationAdapter() {
 
     private var touchStartPos: Vector3 = Vector3(0.0f, 0.0f, 0.0f)
 
-    private var content: Content = Content()
+    //private var content: Content = Content()
 
     private val testSprite by lazy { Sprite() }
 
@@ -56,16 +58,17 @@ class Game : ApplicationAdapter() {
     private val player: Player = Player()
 
     public fun initialize() {
-        content.initialize()
+        Content.initialize()
         // create the camera and the SpriteBatch
         camera = OrthographicCamera()
         camera!!.setToOrtho(false, 1920f, 1080f)
 
         player.setPos(Vector2(100.0f, 480.0f))
-        player.setArea(Vector2(128.0f, 32.0f))
+        player.setArea(Vector2(64.0f, 88.0f))
         player.setHitBoxSize(player.getArea().x, player.getArea().y)
 
-        player.setTexture(content.getTexture("player.png"))
+        player.setTexture(Content.getTexture("player.png"))
+        player.initialize()
 
         player.setHud(hud)
 
@@ -75,16 +78,16 @@ class Game : ApplicationAdapter() {
 
     public fun update(dt: Float) {
 
-        content.getAssetManager().update()
+        Content.getAssetManager().update()
         var deltaTime = Gdx.graphics.deltaTime
         //Game update logic goes here
-        player.update(Gdx.graphics.deltaTime)
+        player.update(deltaTime)
 
         if (player.getPlayerHealth() <= 0) {
             // Perform game-over logic here
             // For now, let's log a message and stop the game
             Gdx.app.log("Game Over", "Player health reached 0. Game Over!")
-            Gdx.app.exit() // Close the application
+            //Gdx.app.exit() // Close the application
             // For example, you can introduce a boolean flag to indicate the game is over.
         }
 
@@ -137,36 +140,50 @@ class Game : ApplicationAdapter() {
 
         bulletTimer += deltaTime
 
-        if (bulletTimer >= 0.5f) {
-
-            var bullet: Bullet = Bullet()
-            bullet.setPos(Vector2(player.getPos().x + player.getArea().x / 2, player.getPos().y))
-            bullet.setTexture(bulletImage)
-            bullet.setArea(Vector2(32.0f, 8.0f))
-            bullet.setHitBoxSize(bullet.getArea().x, bullet.getArea().y)
-
-            bullet.setSpeed(Vector2(400.0f, 0.0f))
-            //bullet.setSpeed(Vector2(400.0f, 100.0f - random(200.0f)))
-            bulletList.add(bullet)
-            bulletTimer = 0.0f
-        }
 
         for (b in bulletList) {
             b.update(deltaTime)
         }
-
+        /*
         for (b in bulletList.indices) {
             for (x in enemyList.indices) {
                 if (enemyList[x].checkCollision(bulletList[b])) {
+                    //Gdx.app.log("Collision detected", "Bullet is colliding with enemy")
                     enemyList[x].kill()
                     bulletList[b].kill()
+                    //hud.score += 10
                     hud.addScore(10)
-                    hud.updateHealthBar(player.getPlayerHealth())
+                }
+            }
+        }
+        */
+        for (b in bulletList.indices) {
+            for (x in enemyList.indices) {
+                if (enemyList[x].checkCollision(bulletList[b])) {
+                    //Gdx.app.log("Collision detected", "Bullet is colliding with enemy")
+                    enemyList[x].kill()
+                    bulletList[b].kill()
+                    //hud.score += 10
+                    hud.addScore(10)
+                }
+            }
+        }
+        for(e in enemyList.indices) {
+            var playerBullets : Vector<Bullet> = player.getBullets()
+            for(b in playerBullets.indices)
+            {
+                if(playerBullets[b].checkCollision(enemyList[e]))
+                {
+                    playerBullets[b].kill()
+                    enemyList[e].damage(playerBullets[b].getDamage())
+                    hud.addScore(10)
                 }
             }
         }
 
         enemyTimer += deltaTime
+
+        enemyUpdates(deltaTime)
 
         // spawn points
         val spawnPoints = arrayOf(
@@ -176,41 +193,20 @@ class Game : ApplicationAdapter() {
             // Add more spawn points if needed
         )
 
-        if (enemyTimer >= 3.5f) {
-            val randomIndex = (Math.random() * spawnPoints.size).toInt()
-            val spawnPoint = spawnPoints[randomIndex]
-
-            var enemy: Enemy = Enemy()
-            enemy.setPos(spawnPoint)
-            enemy.setTexture(content.getTexture("ships_void.png"))
-            enemy.setType(EnemyType.FAST)
-            enemy.setArea(Vector2(64f, 160f))
-            enemy.setHitBoxSize(enemy.getArea().x, enemy.getArea().y)
-
-            val directionLeft = Vector2(-1f, 0f) // Left direction
-
-            val enemySpeed = 50f // Adjust the speed
-            enemy.setSpeed(Vector2(directionLeft.x * enemySpeed, directionLeft.y * enemySpeed))
-
-            Gdx.app.log(
-                "Enemy spawned to location: ",
-                "X:" + enemy.getPos().x + " Y: " + enemy.getPos().y
-            )
-            enemyList.add(enemy)
-            enemyTimer = 0.0f
-        }
-
         for (e in enemyList) {
+            e.update(deltaTime)
+            //Gdx.app.log("Enemy hitbox info", "Pos X: ${e.getHitBox().x}, Pos Y: ${e.getHitBox().y}, Hitbox height: ${e.getHitBox().height}, Hitbox width: ${e.getHitBox().width}")
+            if(e.checkCollision(player))
+            {
+                player.damage(10)
+                hud.updateHealthBar(player.getPlayerHealth())
+            }
+
             if (e.getPos().x <= 0) {
                 Gdx.app.log("Game Over", "An enemy has crossed the left side of the screen")
                 Gdx.app.exit()
-            } else if (player.checkCollisionWithEnemy(e)) {
-                hud.updateHealthBar(player.getPlayerHealth()) // Update the health bar based on player's health
             }
-            e.update(deltaTime)
         }
-
-        player.update(deltaTime)
 
         // Move the backgrounds
         val backgroundSpeed = 50f // Adjust the speed as needed
@@ -236,14 +232,11 @@ class Game : ApplicationAdapter() {
             if (enemyList[e].isDead()) {
                 enemyList[e] = null
                 enemyList.removeAt(e)
+                hud.addScore(100)
             }
         }
-        for (b in bulletList.indices.reversed()) {
-            if (bulletList[b].isDead()) {
-                bulletList[b] = null
-                bulletList.removeAt(b)
-            }
-        }
+        //Removal of player's projectiles marked for deletion
+        player.cleanUp()
     }
 
     public fun draw(dt: Float) {
@@ -253,7 +246,6 @@ class Game : ApplicationAdapter() {
         if (this.camera != null) {
             batch.setProjectionMatrix(this.camera?.combined);
         }
-
         batch.begin()
 
         // Draw the backgrounds with their updated positions
@@ -263,12 +255,7 @@ class Game : ApplicationAdapter() {
         player.render(batch)
         // Render HUD
         hud.draw()
-        //batch.draw(playerImage, rectangle.x, rectangle.y, rectangle.width, rectangle.height)
 
-        //batch.draw(playerImage, player.getPos().x, player.getPos().y, player.getArea().x, player.getArea().y)
-        for (b in bulletList) {
-            batch.draw(b.getTexture(), b.getPos().x, b.getPos().y, b.getArea().x, b.getArea().y)
-        }
 
         for (e in enemyList) {
             //batch.draw(e.getTexture(), e.getPos().x, e.getPos().y, e.getArea().x, e.getArea().y)
@@ -290,7 +277,59 @@ class Game : ApplicationAdapter() {
         }
         */
 
-        player.render(batch)
+        //player.render(batch)
         batch.end()
+
+    }
+
+    fun enemyUpdates(deltaTime: Float)
+    {
+        enemyTimer += deltaTime
+
+        if(enemyTimer >= enemySpawnInterval)
+        {
+            val spawnY : Int = random(RESOLUTIONY - 384)
+            val eType : EnemyType = EnemyType.values().random()
+
+            if(eType == EnemyType.FAST)
+            {
+                var num = 0
+                for (i in 0 until 4) {
+                    num += 1
+                    spawnEnemy(Vector2(RESOLUTIONX.toFloat() + 76*num, spawnY.toFloat()), eType)
+                }
+            }
+            else {
+                spawnEnemy(Vector2(RESOLUTIONX.toFloat(), spawnY.toFloat()), eType)
+            }
+            enemyTimer = 0.0f
+        }
+
+    }
+
+    fun spawnEnemy(spawnPosition: Vector2, type: EnemyType)
+    {
+        //val randomIndex = (Math.random() * spawnPoints.size).toInt()
+        //val spawnPoint = spawnPoints[randomIndex]
+
+        var enemy: Enemy = Enemy()
+        enemy.setPos(spawnPosition)
+        enemy.setTexture(Content.getTexture("ships_void.png"))
+        enemy.setType(type)
+
+        //Change to initialize this in Enemy class when type is known
+        //enemy.setArea(Vector2(64f, 160f))
+        enemy.setHitBoxSize(enemy.getArea().x, enemy.getArea().y)
+
+        val directionLeft = Vector2(-1f, 0f) // Left direction
+
+        val enemySpeed = 50f // Adjust the speed
+        enemy.setSpeed(Vector2(directionLeft.x * enemySpeed, directionLeft.y * enemySpeed))
+
+        Gdx.app.log(
+            "Enemy spawned to location: ",
+            "X:" + enemy.getPos().x + " Y: " + enemy.getPos().y
+        )
+        enemyList.add(enemy)
     }
 }
