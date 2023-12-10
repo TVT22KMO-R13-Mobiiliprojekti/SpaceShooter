@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.MathUtils.*
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
+import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.ScreenUtils
 import java.util.*
 
@@ -53,7 +54,8 @@ class Game : ApplicationAdapter() {
 
     private val testSprite by lazy { Sprite() }
 
-    private val hud by lazy { Hud(batch) }
+    private val stage: Stage by lazy { Stage() }
+    private val hud by lazy { Hud(batch, stage) }
 
     private val player: Player = Player()
 

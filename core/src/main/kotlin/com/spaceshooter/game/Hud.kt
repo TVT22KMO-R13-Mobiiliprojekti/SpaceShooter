@@ -4,8 +4,13 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 
-class Hud(private val batch: SpriteBatch) {
+class Hud(private val batch: SpriteBatch, private val stage: Stage) {
 
     private val player: Player? = null
 
@@ -24,7 +29,25 @@ class Hud(private val batch: SpriteBatch) {
     private var SCREEN_WIDTH = 1920f
     private var score: Int = 0
     private var scoreText = "Score: 0"
+    private val skin: Skin = Skin(Gdx.files.internal("uiskin.json"))
+    private val pauseButton = TextButton("Pause", skin)
+    private val pauseMenu = PauseMenu(skin, stage)
 
+    init {
+        Gdx.input.inputProcessor = stage
+        // Set pausebutton size and position
+        pauseButton.setSize(200f, 100f)
+        pauseButton.setPosition(SCREEN_WIDTH - 50f, SCREEN_HEIGHT - 100f)
+
+        pauseButton.getLabel().setFontScale(fontScale)
+        stage.addActor(pauseButton)
+        // Click listener for pause button
+        pauseButton.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                pauseMenu.show()
+            }
+        })
+    }
     fun draw() {
         // Draw score
         font.data.setScale(fontScale)
@@ -47,6 +70,8 @@ class Hud(private val batch: SpriteBatch) {
             contentWidth,
             contentHeight
         )
+        stage.act()
+        stage.draw()
     }
 
     fun updateHealthBar(playerHealth: Float) {
