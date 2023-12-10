@@ -49,9 +49,9 @@ class Hud(private val batch: SpriteBatch) {
         )
     }
 
-    fun updateHealthBar() {
-        val playerHealth = player?.getPlayerHealth() ?: 0f
-        contentWidth = 450f * (playerHealth / 100f)
+    fun updateHealthBar(playerHealth: Float) {
+        player?.setPlayerHealth(playerHealth) // Update the player's health explicitly
+        contentWidth = 420f * (playerHealth / 100f)
     }
 
     fun addScore(score: Int)

@@ -5,11 +5,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 class Player(): GameObject() {
 
-    private var hud: Hud? = null // Initialize it as nullable
-
-    private var playerHealth = 100f // Initial max health 100
-
-    private var hasTakenDamage = false // Flag to track if damage has been taken in the current frame
+    private var hud: Hud? = null
+    private var playerHealth = 100f
+    private var hasTakenDamage = false
 
 
     fun setHud(hud: Hud) {
@@ -49,38 +47,44 @@ class Player(): GameObject() {
             position.y = 1080.0f - size.y / 2
     }
 
-    fun checkCollisionWithEnemy(enemy: Enemy) {
-        if (hitBox.overlaps(enemy.hitBox)) {
-            // Collision detected between player and enemy
-            Gdx.app.log("Collision", "Player collided with enemy")
+    fun checkCollisionWithEnemy(enemy: Enemy): Boolean {
+        var hasCollided = false // Default value
 
-            val damageAmount = 10f // Assuming 10 is the amount of damage taken
+        if (hitBox.overlaps(enemy.hitBox)) {
+            Gdx.app.log("Collision", "Player collided with enemy")
+            val damageAmount = 10f // 10 is the amount of damage taken
             if (!hasTakenDamage) {
                 takeDamage(damageAmount)
                 hasTakenDamage = true // Set a flag to indicate damage has been taken in this frame
+                hasCollided = true
             }
-        } else {
-            hasTakenDamage = false // Reset the flag if there's no collision
         }
+        if (!hasCollided) {
+            hasTakenDamage = false
+        }
+        return hasCollided
     }
-
 
     private fun takeDamage(damageAmount: Float) {
         playerHealth -= damageAmount
-        hud?.updateHealthBar() // Call the updateHealthBar function to refresh the health bar display
+
+        if (playerHealth < 0f) {
+            playerHealth = 0f // Ensure health doesn't go below 0
+        }
+        hud?.updateHealthBar(playerHealth) // Call the updateHealthBar function to refresh the health bar display
     }
 
     fun setPlayerHealth(health: Float) {
         playerHealth = health
-        //Gdx.app.log("Player Health", "Player health set to: $health")
-        hud?.updateHealthBar() // Call the updateHealthBar function when the player's health is set
+
+        if (playerHealth > 100f) {
+            playerHealth = 100f // Ensure health doesn't exceed the maximum value (100)
+        }
+
+        hud?.updateHealthBar(playerHealth) // Call the updateHealthBar function when the player's health is set
     }
 
-
     fun getPlayerHealth(): Float {
-
-        //Gdx.app.log("Player Health", "Current player health: $playerHealth")
-
         return playerHealth
     }
 }

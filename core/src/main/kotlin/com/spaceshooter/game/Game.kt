@@ -158,11 +158,10 @@ class Game : ApplicationAdapter() {
         for (b in bulletList.indices) {
             for (x in enemyList.indices) {
                 if (enemyList[x].checkCollision(bulletList[b])) {
-                    //Gdx.app.log("Collision detected", "Bullet is colliding with enemy")
                     enemyList[x].kill()
                     bulletList[b].kill()
-                    //hud.score += 10
                     hud.addScore(10)
+                    hud.updateHealthBar(player.getPlayerHealth())
                 }
             }
         }
@@ -202,9 +201,13 @@ class Game : ApplicationAdapter() {
         }
 
         for (e in enemyList) {
+            if (e.getPos().x <= 0) {
+                Gdx.app.log("Game Over", "An enemy has crossed the left side of the screen")
+                Gdx.app.exit()
+            } else if (player.checkCollisionWithEnemy(e)) {
+                hud.updateHealthBar(player.getPlayerHealth()) // Update the health bar based on player's health
+            }
             e.update(deltaTime)
-            //Gdx.app.log("Enemy hitbox info", "Pos X: ${e.getHitBox().x}, Pos Y: ${e.getHitBox().y}, Hitbox height: ${e.getHitBox().height}, Hitbox width: ${e.getHitBox().width}")
-            player.checkCollisionWithEnemy(e)
         }
 
         player.update(deltaTime)
@@ -289,6 +292,5 @@ class Game : ApplicationAdapter() {
 
         player.render(batch)
         batch.end()
-
     }
 }
