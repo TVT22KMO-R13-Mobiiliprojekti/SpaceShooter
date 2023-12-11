@@ -17,8 +17,8 @@ class Hud(private val batch: SpriteBatch, private val stage: Stage) {
     private val font: BitmapFont = BitmapFont()
     private val fontScale = 3f
     private var playerHealth = 100f // Max health 100
-    private val healthBarFrameTexture: Texture = Texture("healthBar.png") // Frame picture
-    private val healthContentTexture: Texture = Texture("healthContent.png") // Healthbar content picture
+    private val healthBarFrameTexture: Texture = Content.getTexture("healthBar.png") // Frame picture
+    private val healthContentTexture: Texture = Content.getTexture("healthContent.png") // Healthbar content picture
     private val healthFrameWidth = 440f // Frame Width
     private val healthFrameHeight = 82f // Frame Height
     private var contentWidth = 420f * (playerHealth / 100f)// Health width
@@ -37,7 +37,7 @@ class Hud(private val batch: SpriteBatch, private val stage: Stage) {
         Gdx.input.inputProcessor = stage
         // Set pausebutton size and position
         pauseButton.setSize(200f, 100f)
-        pauseButton.setPosition(SCREEN_WIDTH - 50f, SCREEN_HEIGHT - 100f)
+        pauseButton.setPosition(SCREEN_WIDTH - 264f, SCREEN_HEIGHT - 100f)
 
         pauseButton.getLabel().setFontScale(fontScale)
         stage.addActor(pauseButton)
@@ -70,8 +70,12 @@ class Hud(private val batch: SpriteBatch, private val stage: Stage) {
             contentWidth,
             contentHeight
         )
+
+        batch.end()
         stage.act()
         stage.draw()
+
+        batch.begin()
     }
 
     fun updateHealthBar(playerHealth: Float) {

@@ -18,7 +18,7 @@ class PauseMenu(private val skin: Skin, private val stage: Stage) {
         val quitButton = TextButton("Quit", skin)
         quitButton.addListener {
             // Stop game
-            Gdx.app.exit()
+            //Gdx.app.exit()
             true
         }
         val continueButton = TextButton("Continue", skin)

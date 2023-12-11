@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.ScreenUtils
+import com.badlogic.gdx.utils.viewport.ScreenViewport
 import java.util.*
 
 class Game : ApplicationAdapter() {
@@ -54,7 +55,7 @@ class Game : ApplicationAdapter() {
 
     private val testSprite by lazy { Sprite() }
 
-    private val stage: Stage by lazy { Stage() }
+    private val stage: Stage by lazy { Stage(ScreenViewport()) }
     private val hud by lazy { Hud(batch, stage) }
 
     private val player: Player = Player()
@@ -255,15 +256,11 @@ class Game : ApplicationAdapter() {
         batch.draw(background2, bg2XPos, 0f, 1920f, 1080f)
         //batch.draw(background1, bg3XPos, 0f, 1920f, 1080f)
         player.render(batch)
-        // Render HUD
-        hud.draw()
-
 
         for (e in enemyList) {
             //batch.draw(e.getTexture(), e.getPos().x, e.getPos().y, e.getArea().x, e.getArea().y)
             e.render(batch)
         }
-
         //Debug draw for rendering HitBox of player to see where it is
         //batch.draw(bulletImage, player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height)
 
@@ -278,7 +275,8 @@ class Game : ApplicationAdapter() {
             batch.draw(enemyImage, b.getHitBox().x, b.getHitBox().y, b.getHitBox().width, b.getHitBox().height)
         }
         */
-
+        // Render HUD
+        hud.draw()
         //player.render(batch)
         batch.end()
 
