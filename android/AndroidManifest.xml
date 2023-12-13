@@ -33,6 +33,11 @@ xmlns:tools="http://schemas.android.com/tools">
         android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout"
         android:exported="true"
         android:screenOrientation="sensorLandscape" />
+    <activity
+        android:name="com.spaceshooter.game.EnterScoreActivity"
+        android:exported="false"
+        android:screenOrientation="sensorLandscape" />
+
 </application>
 
 </manifest>

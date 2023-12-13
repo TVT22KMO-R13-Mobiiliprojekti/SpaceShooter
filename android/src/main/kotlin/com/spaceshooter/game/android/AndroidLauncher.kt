@@ -1,18 +1,22 @@
 package com.spaceshooter.game.android
 
 import MediaManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
-
+import android.util.Log
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
+import com.spaceshooter.game.EnterScoreActivity
 import com.spaceshooter.game.Main
 import com.spaceshooter.game.MainActivity
 import com.spaceshooter.game.R
+import com.spaceshooter.game.ScoreHolder
+
 
 /** Launches the Android application. */
-class AndroidLauncher : AndroidApplication() {
+class AndroidLauncher : AndroidApplication(){
 
     private lateinit var mediaPlayer: MediaManager
     private val musicMenu = R.raw.test_music
@@ -32,17 +36,21 @@ class AndroidLauncher : AndroidApplication() {
         mediaPlayer.switchMusic(this,musicGame)
     }
     override fun onBackPressed() {
+        onPause()
         showExitConfirmationDialog()
     }
 
     private fun showExitConfirmationDialog(){
         val alertDialog = AlertDialog.Builder(this)
             .setTitle("Exit")
-            .setMessage("Are you sure you want exit game")
+            .setMessage("Are you sure you want exit game? Score won't be saved.")
             .setPositiveButton("Yes") { _, _ ->
                 // User confirmed, so allow the default behavior
                 //val intent = Intent(this, MainActivity::class.java)
                 mediaPlayer.switchMusic(this,musicMenu)
+                onResume()
+                val intent = Intent(this, EnterScoreActivity::class.java)
+                startActivity(intent)
                 finish()
                 //startActivity(intent)
 
@@ -50,11 +58,10 @@ class AndroidLauncher : AndroidApplication() {
             .setNegativeButton("No") { dialog, _ ->
                 // User canceled, so dismiss the dialog
                 dialog.dismiss()
+                onResume()
             }
             .create()
 
         alertDialog.show()
     }
-
-
 }

@@ -53,7 +53,7 @@
                 android:gravity="center">
 
                 <TextView
-                    android:id="@+id/text_settings_title"
+                    android:id="@+id/text_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/space_quest"

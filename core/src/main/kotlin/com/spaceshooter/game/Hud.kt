@@ -10,9 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 
-class Hud(private val batch: SpriteBatch, private val stage: Stage) {
+class Hud(private val batch: SpriteBatch, private val stage: Stage) : ScoreHolder  {
 
     private val player: Player? = null
+    private var scoreHolder: ScoreHolder? = null // Nullable ScoreHolder
+
 
     private val font: BitmapFont = BitmapFont()
     private val fontScale = 3f
@@ -87,6 +89,12 @@ class Hud(private val batch: SpriteBatch, private val stage: Stage) {
     {
         this.score += score
         this.scoreText = "Score: " + this.score.toString()
+
+        onScoreUpdated(score)
+
+    }
+    override fun onScoreUpdated(score: Int) {
+        // Handle the updated score, if needed
     }
 
     fun dispose() {

@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import java.util.*
 
-class Game : ApplicationAdapter() {
+class Game : ApplicationAdapter(), ScoreHolder {
 
     var camera: OrthographicCamera? = null
 
@@ -56,7 +56,8 @@ class Game : ApplicationAdapter() {
     private val testSprite by lazy { Sprite() }
 
     private val stage: Stage by lazy { Stage(ScreenViewport()) }
-    private val hud by lazy { Hud(batch, stage) }
+     private val hud by lazy { Hud(batch, stage) } //original
+    //private val hud by lazy { Hud(batch, stage, this) }
 
     private val player: Player = Player()
 
@@ -332,4 +333,10 @@ class Game : ApplicationAdapter() {
         )
         enemyList.add(enemy)
     }
+
+    override fun onScoreUpdated(score: Int) {
+
+        Gdx.app.log("debug", "New Score: $score")
+    }
+
 }

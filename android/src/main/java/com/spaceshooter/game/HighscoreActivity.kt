@@ -32,9 +32,14 @@ class HighscoreActivity : AppCompatActivity() {
         val query = db.collection("highscores")
             .orderBy("score", Query.Direction.DESCENDING)
             .limit(10)
-
         // Set up RecyclerView and attach the adapter
-        hsScreen.layoutManager = GridLayoutManager(this,2)
+        val layoutNonScrollable = object : GridLayoutManager(this, 2) {
+            override fun canScrollVertically(): Boolean {
+                return false
+            }
+        }
+
+        hsScreen.layoutManager = layoutNonScrollable
 
         // Create options for the first 10 scores
         val options = FirestoreRecyclerOptions.Builder<ScoreData>()
