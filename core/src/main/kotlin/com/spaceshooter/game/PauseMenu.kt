@@ -17,7 +17,10 @@ class PauseMenu(private val skin: Skin, private val stage: Stage) {
             setFontScale(fontScale)
         }
         val dialog = Dialog("", skin).apply {
-            contentTable.add(titleLabel).padTop(-200f).padBottom(50f).row()
+            contentTable.add(titleLabel).padTop(-90f).padBottom(50f).row()
+            contentTable.apply {
+                defaults().spaceBottom(45f)
+            }
         }
 
         val buttonStyle = skin.get(TextButton.TextButtonStyle::class.java)
