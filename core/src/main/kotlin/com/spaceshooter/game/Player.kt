@@ -240,4 +240,9 @@ class Player(): GameObject() {
             }
         }
     }
+
+    public fun remove()
+    {
+        sprite.texture.dispose()
+    }
 }

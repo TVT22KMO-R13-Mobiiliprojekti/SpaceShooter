@@ -70,8 +70,8 @@ class Hud(private val batch: SpriteBatch, private val stage: Stage) {
             contentWidth,
             contentHeight
         )
-
         batch.end()
+
         stage.act()
         stage.draw()
 
