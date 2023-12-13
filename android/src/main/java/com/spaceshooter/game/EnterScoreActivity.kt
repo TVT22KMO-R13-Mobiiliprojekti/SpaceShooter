@@ -36,6 +36,15 @@ class EnterScoreActivity : AppCompatActivity(), ScoreHolder {
         val db = FirebaseFirestore.getInstance()
         //hud.setScoreHolder(this)
 
+        // Get the value from the intent extra
+        val score = intent.getIntExtra("score", 0) // default to 0 if not found
+
+        val scoreText : String = "Your score was : $score"
+
+        txtDescription.setText(scoreText)
+        // Log the received score for debugging
+        Log.d("Received Score:", score.toString())
+
 
         // Create a query to get the first 10 high scores
         val query = db.collection("highscores")

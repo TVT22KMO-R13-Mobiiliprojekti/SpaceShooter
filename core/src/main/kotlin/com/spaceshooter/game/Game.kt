@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport
 import java.util.*
 
 
-class Game : ApplicationAdapter() {
+class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdapter() {
 
     var camera: OrthographicCamera? = null
 
@@ -212,6 +212,7 @@ class Game : ApplicationAdapter() {
             }
 
             if (e.getPos().x <= 0) {
+                highScoreInterface.sendScore(hud.getScore())
                 Gdx.app.log("Game Over", "An enemy has crossed the left side of the screen")
                 Gdx.app.exit()
             }

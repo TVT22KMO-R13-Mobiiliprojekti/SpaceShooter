@@ -93,6 +93,11 @@ class Hud(private val batch: SpriteBatch, private val stage: Stage) : ScoreHolde
         onScoreUpdated(score)
 
     }
+
+    fun getScore(): Int
+    {
+        return score
+    }
     override fun onScoreUpdated(score: Int) {
         // Handle the updated score, if needed
     }

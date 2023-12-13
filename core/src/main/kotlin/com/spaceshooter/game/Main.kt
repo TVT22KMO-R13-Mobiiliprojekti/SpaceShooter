@@ -6,16 +6,20 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
+interface HighScoreInterface {
+    fun sendScore(value: Int)
+}
+
 /** [com.badlogic.gdx.ApplicationListener] implementation shared by all platforms. */
-class Main : ApplicationAdapter() {
+class Main(private val highScoreInterface: HighScoreInterface) : ApplicationAdapter() {
     private val batch by lazy { SpriteBatch() }
     private val image by lazy { Texture("libgdx.png") }
 
-    private var game: Game = Game()
+    private var game: Game = Game(highScoreInterface)
 
     private fun initialize()
     {
-        game = Game()
+        game = Game(highScoreInterface)
 
         game.initialize()
     }

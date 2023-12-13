@@ -8,15 +8,12 @@ import androidx.appcompat.app.AlertDialog
 import android.util.Log
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
-import com.spaceshooter.game.EnterScoreActivity
-import com.spaceshooter.game.Main
-import com.spaceshooter.game.MainActivity
-import com.spaceshooter.game.R
-import com.spaceshooter.game.ScoreHolder
+import com.spaceshooter.game.HighScoreInterface
+import com.spaceshooter.game.*
 
 
 /** Launches the Android application. */
-class AndroidLauncher : AndroidApplication(){
+class AndroidLauncher : AndroidApplication(), HighScoreInterface {
 
     private lateinit var mediaPlayer: MediaManager
     private val musicMenu = R.raw.test_music
@@ -24,7 +21,7 @@ class AndroidLauncher : AndroidApplication(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initialize(Main(), AndroidApplicationConfiguration().apply {
+        initialize(Main(this), AndroidApplicationConfiguration().apply {
             // Configure your application here.
             useImmersiveMode = true // Recommended, but not required.
         })
@@ -63,5 +60,12 @@ class AndroidLauncher : AndroidApplication(){
             .create()
 
         alertDialog.show()
+    }
+
+    override fun sendScore(value: Int){
+        val intent = Intent(this, EnterScoreActivity::class.java)
+        intent.putExtra("score", value)
+        Log.d("Score sent from GAME:", value.toString())
+        startActivity(intent)
     }
 }
