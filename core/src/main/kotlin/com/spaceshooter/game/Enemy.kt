@@ -164,5 +164,15 @@ class Enemy() : GameObject() {
 
     }
 
+    public fun getBulletList(): Vector<Bullet>
+    {
+        return enemyBullets
+    }
+
+    public fun getType(): EnemyType
+    {
+        return type
+    }
+
 }
 

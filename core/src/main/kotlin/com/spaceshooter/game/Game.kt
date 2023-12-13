@@ -5,6 +5,9 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.ParticleEffect
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.MathUtils.*
@@ -15,7 +18,8 @@ import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import java.util.*
 
-class Game : ApplicationAdapter(), ScoreHolder {
+
+class Game : ApplicationAdapter() {
 
     var camera: OrthographicCamera? = null
 
@@ -23,7 +27,6 @@ class Game : ApplicationAdapter(), ScoreHolder {
     private val RESOLUTIONY: Int = 1080
 
     private val batch by lazy { SpriteBatch() }
-    private val image by lazy { Texture("libgdx.png") }
 
     //private val background1 by lazy { Texture("bkgd_0.png") }
     private val background2 by lazy { Texture("bkgd_1.png") }
@@ -34,13 +37,8 @@ class Game : ApplicationAdapter(), ScoreHolder {
 
     private val playerImage by lazy { Texture("player.png") }
 
-    private val bulletImage by lazy { Texture("bullet.png") }
-
-    private val enemyImage by lazy { Texture("enemy.png") }
-
     private var bulletList: Vector<Bullet> = Vector<Bullet>()
     private var enemyList: Vector<Enemy> = Vector<Enemy>()
-    //private var enemyBulletList : ArrayList<Bullet> = TODO()
 
     private var enemySpawnInterval : Float = 3.0f
     private var enemyTimer: Float = 0.0f
@@ -56,12 +54,17 @@ class Game : ApplicationAdapter(), ScoreHolder {
     private val testSprite by lazy { Sprite() }
 
     private val stage: Stage by lazy { Stage(ScreenViewport()) }
-     private val hud by lazy { Hud(batch, stage) } //original
-    //private val hud by lazy { Hud(batch, stage, this) }
+    private val hud by lazy { Hud(batch, stage) }
 
     private val player: Player = Player()
 
-    public fun initialize() {
+    lateinit var explosionEffectPool: ParticleEffectPool
+    var effects: Vector<PooledEffect> = Vector<PooledEffect>()
+
+    var explosionEffect : ParticleEffect = ParticleEffect()
+
+
+    fun initialize() {
         Content.initialize()
         // create the camera and the SpriteBatch
         camera = OrthographicCamera()
@@ -76,14 +79,22 @@ class Game : ApplicationAdapter(), ScoreHolder {
 
         player.setHud(hud)
 
-        testSprite.texture = playerImage
+        explosionEffect.load(Gdx.files.internal("particles/smallexplosion.p"), Gdx.files.internal(""));
+        explosionEffect.setPosition(300f, 300f)
+        explosionEffect.start()
+
+        explosionEffectPool = ParticleEffectPool(explosionEffect, 1, 32)
+    }
+
+    override fun create() {
+        Content.initialize()
     }
 
 
-    public fun update(dt: Float) {
+    fun update(deltaTime: Float) {
 
         Content.getAssetManager().update()
-        var deltaTime = Gdx.graphics.deltaTime
+
         //Game update logic goes here
         player.update(deltaTime)
 
@@ -142,6 +153,10 @@ class Game : ApplicationAdapter(), ScoreHolder {
             //rectangle.x += 200 * Gdx.graphics.deltaTime
         }
 
+        //explosionEffect.update(deltaTime)
+
+
+
         bulletTimer += deltaTime
 
 
@@ -161,23 +176,13 @@ class Game : ApplicationAdapter(), ScoreHolder {
             }
         }
         */
-        for (b in bulletList.indices) {
-            for (x in enemyList.indices) {
-                if (enemyList[x].checkCollision(bulletList[b])) {
-                    //Gdx.app.log("Collision detected", "Bullet is colliding with enemy")
-                    enemyList[x].kill()
-                    bulletList[b].kill()
-                    //hud.score += 10
-                    hud.addScore(10)
-                }
-            }
-        }
         for(e in enemyList.indices) {
             var playerBullets : Vector<Bullet> = player.getBullets()
             for(b in playerBullets.indices)
             {
                 if(playerBullets[b].checkCollision(enemyList[e]))
                 {
+                    spawnParticleEffect(playerBullets[b].getPos().x + playerBullets[b].getArea().x/2, playerBullets[b].getPos().y + playerBullets[b].getArea().y/2, 0.5f)
                     playerBullets[b].kill()
                     enemyList[e].damage(playerBullets[b].getDamage())
                     hud.addScore(10)
@@ -234,6 +239,15 @@ class Game : ApplicationAdapter(), ScoreHolder {
         //Removal of dead GameObjects:
         for (e in enemyList.indices.reversed()) {
             if (enemyList[e].isDead()) {
+
+                var particleScale = 1f
+                if(enemyList[e].getType() == EnemyType.TANK){
+                    particleScale = 5f
+                }
+                else if(enemyList[e].getType() == EnemyType.SHOOTER){
+                    particleScale = 2f
+                }
+                spawnParticleEffect(enemyList[e].getPos().x + enemyList[e].getArea().x/2, enemyList[e].getPos().y + enemyList[e].getArea().y/2, particleScale)
                 enemyList[e] = null
                 enemyList.removeAt(e)
                 hud.addScore(100)
@@ -243,7 +257,7 @@ class Game : ApplicationAdapter(), ScoreHolder {
         player.cleanUp()
     }
 
-    public fun draw(dt: Float) {
+    public fun draw(deltaTime: Float) {
         ScreenUtils.clear(0.0f, 0.0f, 0.0f, 1.0f);
         camera?.update();
 
@@ -262,20 +276,19 @@ class Game : ApplicationAdapter(), ScoreHolder {
             //batch.draw(e.getTexture(), e.getPos().x, e.getPos().y, e.getArea().x, e.getArea().y)
             e.render(batch)
         }
-        //Debug draw for rendering HitBox of player to see where it is
-        //batch.draw(bulletImage, player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height)
 
-        //Debug draw for rendering enemies' and bullets' hitboxes.
-        /*
-        for(e in enemyList)
-        {
-            batch.draw(bulletImage, e.getHitBox().x, e.getHitBox().y, e.getHitBox().width, e.getHitBox().height)
+        //Draw particle effects
+        for (i in effects.size - 1 downTo 0) {
+            val effect = effects[i]
+            effect.draw(batch, deltaTime)
+            if (effect.isComplete()) {
+                effect.free()
+                effects.removeAt(i)
+            }
         }
-        for(b in bulletList)
-        {
-            batch.draw(enemyImage, b.getHitBox().x, b.getHitBox().y, b.getHitBox().width, b.getHitBox().height)
-        }
-        */
+
+        //explosionEffect.draw(batch)
+
         // Render HUD
         hud.draw()
         //player.render(batch)
@@ -305,7 +318,6 @@ class Game : ApplicationAdapter(), ScoreHolder {
             }
             enemyTimer = 0.0f
         }
-
     }
 
     fun spawnEnemy(spawnPosition: Vector2, type: EnemyType)
@@ -324,7 +336,7 @@ class Game : ApplicationAdapter(), ScoreHolder {
 
         val directionLeft = Vector2(-1f, 0f) // Left direction
 
-        val enemySpeed = 50f // Adjust the speed
+        val enemySpeed = 150f // Adjust the speed
         enemy.setSpeed(Vector2(directionLeft.x * enemySpeed, directionLeft.y * enemySpeed))
 
         Gdx.app.log(
@@ -334,9 +346,29 @@ class Game : ApplicationAdapter(), ScoreHolder {
         enemyList.add(enemy)
     }
 
-    override fun onScoreUpdated(score: Int) {
-
-        Gdx.app.log("debug", "New Score: $score")
+    fun spawnParticleEffect(posX: Float, posY: Float, scale: Float)
+    {
+        var pooledEffect : PooledEffect = explosionEffectPool.obtain()
+        pooledEffect.setPosition(posX, posY)
+        pooledEffect.scaleEffect(scale)
+        effects.add(pooledEffect)
     }
 
+    override fun pause()
+    {
+        Content.dispose()
+        Gdx.app.log("Content", "Disposing assets")
+    }
+
+    override fun resume()
+    {
+        Gdx.app.log("Content", "Reloading assets")
+        Content.reloadAssets()
+    }
+
+    override fun dispose() {
+        Content.dispose()
+        batch.dispose()
+        explosionEffectPool.clear()
+    }
 }

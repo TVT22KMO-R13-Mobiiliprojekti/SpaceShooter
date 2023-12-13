@@ -39,12 +39,13 @@ class Main : ApplicationAdapter() {
         batch.draw(image, 140f, 210f)
         batch.end()
         */
-        game.update(Gdx.graphics.getDeltaTime())
-        game.draw(Gdx.graphics.getDeltaTime())
+        game.update(deltaTime)
+        game.draw(deltaTime)
     }
 
     override fun dispose() {
         batch.dispose()
         image.dispose()
+        game.dispose()
     }
 }

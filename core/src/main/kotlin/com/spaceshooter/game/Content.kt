@@ -1,14 +1,17 @@
 package com.spaceshooter.game
 
+import com.badlogic.gdx.ApplicationAdapter
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 
 
-object Content {
-    private var manager = AssetManager()
+object Content: ApplicationAdapter() {
+    private var manager : AssetManager = AssetManager()
 
     fun initialize()
     {
+        manager = AssetManager()
         loadTextures()
         loadSounds()
         loadMusic()
@@ -41,6 +44,11 @@ object Content {
         manager.finishLoading()
     }
 
+    fun loadParticles()
+    {
+        //manager.load(Gdx.files.internal(""), atlas)
+    }
+
     fun getAssetManager() : AssetManager
     {
         return this.manager
@@ -64,5 +72,16 @@ object Content {
 
             return tex
         }
+    }
+
+    // Unload assets when the context is about to change
+    override fun dispose() {
+        manager.dispose()
+    }
+
+    // Reload assets when the context is recreated
+    fun reloadAssets() {
+        manager = AssetManager()
+        initialize()
     }
 }
