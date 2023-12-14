@@ -46,10 +46,9 @@ class AndroidLauncher : AndroidApplication(), HighScoreInterface {
                 //val intent = Intent(this, MainActivity::class.java)
                 mediaPlayer.switchMusic(this,musicMenu)
                 onResume()
-                val intent = Intent(this, EnterScoreActivity::class.java)
-                startActivity(intent)
-                finish()
+                //val intent = Intent(this, EnterScoreActivity::class.java)
                 //startActivity(intent)
+                finish()
 
             }
             .setNegativeButton("No") { dialog, _ ->
