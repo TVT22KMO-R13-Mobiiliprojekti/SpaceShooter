@@ -1,6 +1,7 @@
 package com.spaceshooter.game
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Vector2
 import java.util.*
@@ -12,6 +13,9 @@ class Player(): GameObject() {
     private var hasTakenDamage = false // Flag to track if damage has been taken in the current frame
 
     private var playerBullets: Vector<Bullet> = Vector<Bullet>()
+
+    private var shootingSound: Sound? = null
+    var soundId: Long = -1
 
     private var projectileTimer: Float = 0.0f
     private var beamTimer: Float = 0.0f
@@ -189,6 +193,8 @@ class Player(): GameObject() {
         updateHitBox()
 
         setArea(this.size)
+
+        shootingSound = Gdx.audio.newSound(Gdx.files.internal("alienshoot3.wav"))
     }
 
     fun updateWeapons(deltaTime: Float)
@@ -209,6 +215,9 @@ class Player(): GameObject() {
                     this.getPos().y - bullet.getArea().y / 2)
             )
             bullet.setHitBoxSize(bullet.getArea().x, bullet.getArea().y)
+
+            soundId = shootingSound?.play() ?: -1
+            shootingSound?.setVolume(soundId,0.5f)
 
             bullet.setSpeed(Vector2(600.0f, 0.0f))
             //bullet.setSpeed(Vector2(400.0f, 100.0f - random(200.0f)))
