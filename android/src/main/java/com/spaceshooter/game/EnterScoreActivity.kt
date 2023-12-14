@@ -1,5 +1,6 @@
 package com.spaceshooter.game
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -18,7 +19,7 @@ class EnterScoreActivity : AppCompatActivity() {
     private lateinit var txtDescription: TextView
     private lateinit var editName: EditText
 
-
+    private val db = FirebaseFirestore.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_enter_score)
@@ -28,9 +29,6 @@ class EnterScoreActivity : AppCompatActivity() {
         txtDescription = findViewById(R.id.text_desc)
         editName = findViewById(R.id.editText_name)
 
-
-
-        val db = FirebaseFirestore.getInstance()
         //hud.setScoreHolder(this)
 
         // Get the value from the intent extra
@@ -68,15 +66,18 @@ class EnterScoreActivity : AppCompatActivity() {
                 btnReturn.text = "Enter name"
                 btnReturn.setOnClickListener {
                     val nickName = editName.text.toString()
-                    insertNewHighScore(nickName,score)
+                    insertNewHighScore(nickName, score)
+                    val intent = Intent(this, HighscoreActivity::class.java)
                     finish()
+                    startActivity(intent)
                 }
 
             } else {
                 // User's score is not in the top 10, update the UI accordingly
                 txtTitle.text = "Try Again!"
                 txtDescription.text = "Sorry, but your score wasn't high enough."
-                editName.isEnabled = false // Disable the EditText since the score isn't in the top 10
+                editName.isEnabled =
+                    false // Disable the EditText since the score isn't in the top 10
                 btnReturn.text = "Back to menu"
             }
         }.addOnFailureListener { exception ->
@@ -87,6 +88,7 @@ class EnterScoreActivity : AppCompatActivity() {
             finish()
         }
     }
+
     private fun insertNewHighScore(name: String, score: Int) {
         val db = FirebaseFirestore.getInstance()
 
@@ -100,11 +102,43 @@ class EnterScoreActivity : AppCompatActivity() {
         db.collection("highscores")
             .add(newHighScore)
             .addOnSuccessListener { documentReference ->
-                Log.d("EnterScoreActivity", "Lisätty tietokantaan.")
+                Log.d("EnterScoreActivity", "Lisäys tietokantaan onnistui")
+
+                // After adding the new score, check if the number of scores exceeds a limit
+                val limit : Long = 10 // Set your desired limit for the number of high scores, data type seems to be "Long" instead of "Int" in firestore database
+
+                db.collection("highscores")
+                    .orderBy("score", Query.Direction.DESCENDING)
+                    .limit(limit + 1) // Get the top (limit + 1) scores
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        val scoresToDelete = mutableListOf<String>()
+
+                        // Iterate through the query results and populate the scoresToDelete list
+                        for (document in querySnapshot) {
+                            scoresToDelete.add(document.id)
+                        }
+
+                        // Delete the lowest score if there are more than the limit
+                        if (scoresToDelete.size > limit) {
+                            // Delete the lowest score (last in the list)
+                            db.collection("highscores")
+                                .document(scoresToDelete.last())
+                                .delete()
+                                .addOnSuccessListener {
+                                    Log.d("EnterScoreActivity", "Alin piste poistettu")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e("EnterScoreActivity", "Virhe alimman pisteen poistamisessa tietokannasta", e)
+                                }
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e("EnterScoreActivity", "Virhe tietokannan lukemisessa", exception)
+                    }
             }
             .addOnFailureListener { e ->
-                Log.e("EnterScoreActivity", "Virhe tietokantaan lisäämisessä", e)
+                Log.e("EnterScoreActivity", "Virhe tietokantaan lisäyksessä", e)
             }
     }
-
 }
