@@ -16,8 +16,8 @@ import com.spaceshooter.game.*
 class AndroidLauncher : AndroidApplication(), HighScoreInterface {
 
     private lateinit var mediaPlayer: MediaManager
-    private val musicMenu = R.raw.test_music
-    private val musicGame = R.raw.test_music_2
+    private val musicMenu = R.raw.menu_music
+    private val musicGame = R.raw.game_music
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

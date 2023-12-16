@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.5"
         android:fontFamily="@font/space_quest"
-        android:textColor="#FFFFFF"
+        android:textColor="#FB8C00"
         android:textSize="24sp"
         tools:text="123" />
 </LinearLayout>

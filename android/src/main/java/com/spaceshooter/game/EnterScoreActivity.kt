@@ -33,7 +33,6 @@ class EnterScoreActivity : AppCompatActivity() {
 
         // Get the value from the intent extra
         val score = intent.getIntExtra("score", 0) // default to 0 if not found
-
         val scoreText: String = "Your score was : $score"
 
         //txtDescription.text = scoreText

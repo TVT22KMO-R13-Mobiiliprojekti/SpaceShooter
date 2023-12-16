@@ -13,7 +13,7 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var btnReturn: Button
     private lateinit var switchMusic: Switch
     private lateinit var switchSfx: Switch
-    private val musicMenu = R.raw.test_music
+    private val musicMenu = R.raw.menu_music
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
