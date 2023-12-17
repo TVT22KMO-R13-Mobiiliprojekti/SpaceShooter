@@ -3,6 +3,7 @@ package com.spaceshooter.game
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Vector2
 import java.util.*
+import kotlin.math.abs
 
 enum class EnemyType
 {
@@ -15,6 +16,9 @@ class Enemy() : GameObject() {
     private var health : Int = 10
     private var shootingInterval: Float = 2.5f
     private var shootTimer: Float = 0.0f
+    private var movementAmount: Float = 0.0f
+    private var offsetX: Float = 0.0f
+    private var flipMovement: Boolean = false
 
     private var enemyBullets: Vector<Bullet> = Vector<Bullet>()
 
@@ -73,6 +77,7 @@ class Enemy() : GameObject() {
             val newRegion = textureRegions[currentFrame]
             sprite.setRegion(newRegion)
             rotation = 90.0f
+            setSpeed(Vector2(-100.0f, 0.0f))
         }
         else if(type == EnemyType.FAST)
         {
@@ -90,6 +95,7 @@ class Enemy() : GameObject() {
             sprite.setRegion(newRegion)
 
             rotation = 90.0f
+            setSpeed(Vector2(-200.0f, 0.0f))
         }
         else if(type == EnemyType.SHOOTER)
         {
@@ -106,6 +112,7 @@ class Enemy() : GameObject() {
             val newRegion = textureRegions[currentFrame]
             sprite.setRegion(newRegion)
             rotation = 90.0f
+            setSpeed(Vector2(-150.0f, 0.0f))
         }
         sprite.rotate(rotation)
         updateHitBox()
@@ -122,7 +129,49 @@ class Enemy() : GameObject() {
 
     fun fastUpdate(deltaTime: Float)
     {
+        movementAmount += abs(speed.x) * deltaTime
+        movementAmount += abs(speed.y) * deltaTime
+        if(movementAmount >= 250.0f + offsetX)
+        {
+            if(abs(speed.x) > 0.0f)
+            {
+                if(flipMovement) {
+                    setSpeed(Vector2(0.0f, 200f))
+                    rotation = 0f
+                }
+                else {
+                    setSpeed(Vector2(0.0f, -200f))
+                    rotation = 180f
+                }
+            }
+            else if(abs(speed.y) > 0.0f)
+            {
+                setSpeed(Vector2(-300.0f, 0.0f))
+                rotation = 90f
+            }
 
+            movementAmount = 0.0f
+            fastUpdateBounds()
+
+            sprite.rotation = rotation
+            offsetX = 0.0f
+        }
+    }
+
+    private fun fastUpdateBounds()
+    {
+        val centerY = getCenter().y
+        val screenCenterY = 1080.0f / 2 // Assuming 1080p screen height
+
+        val spacing = 100.0f
+
+        if (centerY > screenCenterY - spacing) {
+            // Too much towards the top, set flipMovement to false
+            flipMovement = false
+        } else if (centerY < screenCenterY + spacing) {
+            // Too much towards the bottom, set flipMovement to true
+            flipMovement = true
+        }
     }
 
     fun shooterUpdate(deltaTime: Float)
@@ -172,6 +221,16 @@ class Enemy() : GameObject() {
     public fun getType(): EnemyType
     {
         return type
+    }
+
+    public fun setOffsetX(offset: Float)
+    {
+        this.offsetX = offset
+    }
+
+    public fun moveFlip(flip: Boolean)
+    {
+        this.flipMovement = flip
     }
 
 }

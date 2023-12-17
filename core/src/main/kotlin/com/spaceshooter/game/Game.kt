@@ -42,6 +42,8 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
 
     private var enemySpawnInterval : Float = 3.0f
     private var enemyTimer: Float = 0.0f
+    private var spawnCount : Int = 0
+    private var flipMove: Boolean = false
 
     private var bulletTimer: Float = 0.0f
 
@@ -59,9 +61,11 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
     private val player: Player = Player()
 
     lateinit var explosionEffectPool: ParticleEffectPool
+    lateinit var thrusterEffectPool: ParticleEffectPool
     var effects: Vector<PooledEffect> = Vector<PooledEffect>()
 
     var explosionEffect : ParticleEffect = ParticleEffect()
+    var thrusterEffect: ParticleEffect = ParticleEffect()
 
 
     fun initialize() {
@@ -83,7 +87,13 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
         explosionEffect.setPosition(300f, 300f)
         explosionEffect.start()
 
+        thrusterEffect.load(Gdx.files.internal("particles/thruster.p"), Gdx.files.internal(""))
+
         explosionEffectPool = ParticleEffectPool(explosionEffect, 1, 32)
+        thrusterEffectPool = ParticleEffectPool(thrusterEffect, 1, 64)
+
+        player.setThrusterParticlePool(thrusterEffectPool, thrusterEffect)
+        player.setPooledEffects(effects)
     }
 
     override fun create() {
@@ -194,6 +204,8 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
 
         enemyUpdates(deltaTime)
 
+        findClosestEnemy()
+
         // spawn points
         val spawnPoints = arrayOf(
             Vector2(1700f, 500f),
@@ -213,8 +225,8 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
 
             if (e.getPos().x <= 0) {
                 highScoreInterface.sendScore(hud.getScore())
-                Gdx.app.log("Game Over", "An enemy has crossed the left side of the screen")
-                Gdx.app.exit()
+                //Gdx.app.log("Game Over", "An enemy has crossed the left side of the screen")
+                //Gdx.app.exit()
             }
         }
 
@@ -309,6 +321,7 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
             if(eType == EnemyType.FAST)
             {
                 var num = 0
+                flipMove = !flipMove
                 for (i in 0 until 4) {
                     num += 1
                     spawnEnemy(Vector2(RESOLUTIONX.toFloat() + 76*num, spawnY.toFloat()), eType)
@@ -331,19 +344,33 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
         enemy.setTexture(Content.getTexture("ships_void.png"))
         enemy.setType(type)
 
+        if(type == EnemyType.FAST)
+        {
+            enemy.setOffsetX(spawnCount * 76f)
+            enemy.moveFlip(flipMove)
+        }
+
+
+        if(type == EnemyType.FAST && spawnCount < 3) {
+            spawnCount += 1
+        }
+        else if(spawnCount >= 3){
+            spawnCount = 0
+        }
+
         //Change to initialize this in Enemy class when type is known
         //enemy.setArea(Vector2(64f, 160f))
         enemy.setHitBoxSize(enemy.getArea().x, enemy.getArea().y)
 
-        val directionLeft = Vector2(-1f, 0f) // Left direction
+        //val directionLeft = Vector2(-1f, 0f) // Left direction
 
-        val enemySpeed = 150f // Adjust the speed
-        enemy.setSpeed(Vector2(directionLeft.x * enemySpeed, directionLeft.y * enemySpeed))
+        //val enemySpeed = 150f // Adjust the speed
+        //enemy.setSpeed(Vector2(directionLeft.x * enemySpeed, directionLeft.y * enemySpeed))
 
-        Gdx.app.log(
-            "Enemy spawned to location: ",
-            "X:" + enemy.getPos().x + " Y: " + enemy.getPos().y
-        )
+        //Gdx.app.log(
+        //    "Enemy spawned to location: ",
+        //    "X:" + enemy.getPos().x + " Y: " + enemy.getPos().y
+        //)
         enemyList.add(enemy)
     }
 
@@ -353,6 +380,22 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
         pooledEffect.setPosition(posX, posY)
         pooledEffect.scaleEffect(scale)
         effects.add(pooledEffect)
+    }
+
+    private fun findClosestEnemy() {
+        var closestDistanceSquared = Float.MAX_VALUE
+        var closestEnemy: Enemy? = null
+
+        for (enemy in enemyList) {
+            val distanceSquared = player.getPos().dst2(enemy.getPos())
+
+            // Update closest enemy if the current enemy is closer
+            if (distanceSquared < closestDistanceSquared) {
+                closestDistanceSquared = distanceSquared
+                closestEnemy = enemy
+            }
+        }
+        player.setTargetEnemy(closestEnemy)
     }
 
     override fun pause()

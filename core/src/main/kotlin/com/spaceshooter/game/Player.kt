@@ -2,6 +2,9 @@ package com.spaceshooter.game
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
+import com.badlogic.gdx.graphics.g2d.ParticleEffect
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Vector2
 import java.util.*
@@ -22,12 +25,18 @@ class Player(): GameObject() {
     private var rocketTimer: Float = 0.0f
     private var projectileInterval: Float = 0.33f
     private var beamInterval: Float = 0.3f
-    private var rocketInterval: Float = 0.5f
+    private var rocketInterval: Float = 3.0f
+
+    private var closestEnemy: Enemy? = null
 
     private var invincibilityTime: Float = 0.0f
     private var blinkTimer = 0.0f
     private var blinkInterval = 0.16f
     private var visible : Boolean = true
+
+    private lateinit var thrusterEffectPool : ParticleEffectPool
+    private var thrusterEffect : ParticleEffect = ParticleEffect()
+    private var effects: Vector<PooledEffect> = Vector<PooledEffect>()
 
 
     fun setHud(hud: Hud) {
@@ -68,6 +77,11 @@ class Player(): GameObject() {
         for(b in playerBullets)
         {
             b.update(deltaTime)
+
+            if(!b.getHoming())
+            {
+                b.setTarget(closestEnemy)
+            }
         }
 
     }
@@ -224,6 +238,27 @@ class Player(): GameObject() {
             playerBullets.add(bullet)
             projectileTimer = 0.0f
         }
+        if (rocketTimer >= rocketInterval) {
+            var bullet: Bullet = Bullet()
+            bullet.setType(BulletType.ROCKET)
+            bullet.setTarget(closestEnemy)
+
+            bullet.setTexture(Content.getTexture("rocket.png"))
+            bullet.initialize()
+            bullet.setArea(Vector2(48.0f, 24.0f))
+            bullet.setPos(
+                Vector2(
+                    this.getPos().x - bullet.getArea().x,
+                    this.getPos().y - bullet.getArea().y)
+            )
+            bullet.setHitBoxSize(bullet.getArea().x, bullet.getArea().y)
+
+            bullet.setSpeed(Vector2(400.0f, 0.0f))
+            //bullet.setSpeed(Vector2(400.0f, 100.0f - random(200.0f)))
+            playerBullets.add(bullet)
+            rocketTimer = 0.0f
+            spawnThrusterEffect(bullet.getPos().x, bullet.getPos().y, 0.5f, bullet)
+        }
     }
 
     public fun damage(damage: Int)
@@ -237,6 +272,31 @@ class Player(): GameObject() {
     public fun getBullets() : Vector<Bullet>
     {
         return playerBullets
+    }
+
+    public fun setTargetEnemy(target: Enemy?)
+    {
+        closestEnemy = target
+    }
+
+    public fun setThrusterParticlePool(thrusterEffectPool: ParticleEffectPool, thrusterEffect: ParticleEffect)
+    {
+        this.thrusterEffectPool = thrusterEffectPool
+        this.thrusterEffect = thrusterEffect
+    }
+
+    public fun setPooledEffects(effects: Vector<PooledEffect>)
+    {
+        this.effects = effects
+    }
+
+    fun spawnThrusterEffect(posX: Float, posY: Float, scale: Float, bullet: Bullet)
+    {
+        var pooledEffect : ParticleEffectPool.PooledEffect = thrusterEffectPool.obtain()
+        pooledEffect.setPosition(posX, posY)
+        pooledEffect.scaleEffect(scale)
+        effects.add(pooledEffect)
+        bullet.setThruster(pooledEffect)
     }
 
     //Use at the end of update-loop for cleaning up dead objects in Game.kt

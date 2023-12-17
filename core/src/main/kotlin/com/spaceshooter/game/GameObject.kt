@@ -133,7 +133,7 @@ open class GameObject() {
         sprite.setOrigin(sprite.width / 2, sprite.height / 2);
     }
 
-    fun kill()
+    open fun kill()
     {
         this.isDead = true
     }
@@ -156,5 +156,10 @@ open class GameObject() {
 
         // Update Rectangle size to match the rotated sprite
         hitBox.setSize(rotatedWidth.toFloat(), rotatedHeight.toFloat())
+    }
+
+    public fun getCenter(): Vector2
+    {
+        return Vector2(this.position.x + this.size.x/2, this.position.y + this.size.y/2)
     }
 }

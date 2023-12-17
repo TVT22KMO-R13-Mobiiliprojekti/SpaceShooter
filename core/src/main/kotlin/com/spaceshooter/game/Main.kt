@@ -8,6 +8,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 interface HighScoreInterface {
     fun sendScore(value: Int)
+
+    companion object {
+        // Default implementation
+        fun createDefault(): HighScoreInterface {
+            return object : HighScoreInterface {
+                override fun sendScore(value: Int) {
+                    // Default implementation logic
+                }
+            }
+        }
+    }
 }
 
 /** [com.badlogic.gdx.ApplicationListener] implementation shared by all platforms. */
