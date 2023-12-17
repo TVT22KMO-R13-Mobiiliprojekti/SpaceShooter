@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 class Hud(private val batch: SpriteBatch, private val stage: Stage) : ScoreHolder  {
 
     private val player: Player? = null
+    private var game: Game? = null
     private var scoreHolder: ScoreHolder? = null // Nullable ScoreHolder
 
 
@@ -47,6 +48,8 @@ class Hud(private val batch: SpriteBatch, private val stage: Stage) : ScoreHolde
         pauseButton.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 pauseMenu.show()
+                game!!.pauseGame(true)
+                Gdx.app.log("PAUSE", "PRESSED")
             }
         })
     }
@@ -81,7 +84,6 @@ class Hud(private val batch: SpriteBatch, private val stage: Stage) : ScoreHolde
     }
 
     fun updateHealthBar(playerHealth: Float) {
-        player?.setPlayerHealth(playerHealth) // Update the player's health explicitly
         contentWidth = 420f * (playerHealth / 100f)
     }
 
@@ -100,6 +102,17 @@ class Hud(private val batch: SpriteBatch, private val stage: Stage) : ScoreHolde
     }
     override fun onScoreUpdated(score: Int) {
         // Handle the updated score, if needed
+    }
+
+    public fun setGame(game: Game)
+    {
+        this.game = game
+        pauseMenu.setGame(game)
+    }
+
+    fun pauseGame(paused: Boolean)
+    {
+        game!!.pauseGame(paused)
     }
 
     fun dispose() {

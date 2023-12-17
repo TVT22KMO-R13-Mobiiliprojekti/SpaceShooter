@@ -54,7 +54,10 @@ class Main(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
         batch.draw(image, 140f, 210f)
         batch.end()
         */
-        game.update(deltaTime)
+        if(!game.getGamePaused())
+        {
+            game.update(deltaTime)
+        }
         game.draw(deltaTime)
     }
 

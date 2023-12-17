@@ -68,6 +68,8 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
     var explosionEffect : ParticleEffect = ParticleEffect()
     var thrusterEffect: ParticleEffect = ParticleEffect()
 
+    private var gamePaused: Boolean = false
+
 
     fun initialize() {
         Content.initialize()
@@ -83,6 +85,8 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
         player.initialize()
 
         player.setHud(hud)
+
+        hud.setGame(this)
 
         explosionEffect.load(Gdx.files.internal("particles/smallexplosion.p"), Gdx.files.internal(""));
         explosionEffect.setPosition(300f, 300f)
@@ -397,6 +401,16 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
                 b.kill()
             }
         }
+    }
+
+    public fun pauseGame(paused: Boolean)
+    {
+        this.gamePaused = paused
+    }
+
+    public fun getGamePaused() : Boolean
+    {
+        return gamePaused
     }
 
     override fun pause()

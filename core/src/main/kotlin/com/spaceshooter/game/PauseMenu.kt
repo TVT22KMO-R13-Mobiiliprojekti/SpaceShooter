@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 class PauseMenu(private val skin: Skin, private val stage: Stage) {
     private val fontScale = 3.0f
     private val dialog: Dialog = createMenuDialog()
+    private var dialogAdded: Boolean = false
+    private var game: Game? = null
 
     private fun createMenuDialog(): Dialog {
         val titleLabel = Label("Pause menu", skin).apply {
@@ -34,11 +36,14 @@ class PauseMenu(private val skin: Skin, private val stage: Stage) {
         quitButton.style = buttonStyle
         quitButton.addListener {
             // Stop game
-            // Gdx.app.exit()
+            Gdx.app.exit()
             true
         }
         val continueButton = TextButton("Continue", skin)
-        quitButton.addListener {
+        continueButton.addListener {
+            dialog.hide()
+            game!!.pauseGame(false)
+            Gdx.input.inputProcessor = stage
             // Add functionality
             true
         }
@@ -66,8 +71,26 @@ class PauseMenu(private val skin: Skin, private val stage: Stage) {
     }
 
     fun show() {
-        stage.addActor(dialog)
+        if(dialogAdded == false) {
+            stage.addActor(dialog)
+            dialogAdded = true
+        }
+        dialog.show(stage)
+        dialog.setSize(900f, 600f)
+        dialog.setPosition(700f,220f)
     }
+
+    public fun setGame(game: Game)
+    {
+        this.game = game
+    }
+
+    fun pauseGame(paused: Boolean)
+    {
+        game!!.pauseGame(paused)
+    }
+
+
 }
 
 
