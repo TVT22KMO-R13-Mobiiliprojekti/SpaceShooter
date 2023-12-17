@@ -39,6 +39,7 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
 
     private var bulletList: Vector<Bullet> = Vector<Bullet>()
     private var enemyList: Vector<Enemy> = Vector<Enemy>()
+    private var enemyBulletList: Vector<Bullet> = Vector<Bullet>()
 
     private var enemySpawnInterval : Float = 3.0f
     private var enemyTimer: Float = 0.0f
@@ -110,10 +111,9 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
 
         if (player.getPlayerHealth() <= 0) {
             // Perform game-over logic here
-            // For now, let's log a message and stop the game
-            Gdx.app.log("Game Over", "Player health reached 0. Game Over!")
+            //Gdx.app.log("Game Over", "Player health reached 0. Game Over!")
+            highScoreInterface.sendScore(hud.getScore())
             //Gdx.app.exit() // Close the application
-            // For example, you can introduce a boolean flag to indicate the game is over.
         }
 
         // process user input
@@ -126,8 +126,6 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
             val touchPos = Vector3()
             touchPos[Gdx.input.x.toFloat(), Gdx.input.y.toFloat()] = 0f
             camera!!.unproject(touchPos)
-            //(touchPos.x - 128 / 2).also { this.rectangle.x = it }
-            //(touchPos.y - 32 / 2).also { this.rectangle.y = it }
 
             var distance = touchStartPos.dst2(touchPos)
             var deltaY = touchPos.y - touchStartPos.y
@@ -143,9 +141,6 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
 
             var speedMultiplier = 0.01f
 
-            //Gdx.app.log("ANGLE IN RAD", "Angle : $angle")
-            //Gdx.app.log("DISTANCE : ", "DISTANCE : $distance")
-
             player.setSpeed(
                 Vector2(
                     distance * speedX * speedMultiplier,
@@ -156,16 +151,6 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
             touchStarted = false
             player.setSpeed(Vector2(0.0f, 0.0f))
         }
-        if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-            //rectangle.x -= 200 * Gdx.graphics.deltaTime
-        }
-        if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-            //rectangle.x += 200 * Gdx.graphics.deltaTime
-        }
-
-        //explosionEffect.update(deltaTime)
-
-
 
         bulletTimer += deltaTime
 
@@ -173,19 +158,7 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
         for (b in bulletList) {
             b.update(deltaTime)
         }
-        /*
-        for (b in bulletList.indices) {
-            for (x in enemyList.indices) {
-                if (enemyList[x].checkCollision(bulletList[b])) {
-                    //Gdx.app.log("Collision detected", "Bullet is colliding with enemy")
-                    enemyList[x].kill()
-                    bulletList[b].kill()
-                    //hud.score += 10
-                    hud.addScore(10)
-                }
-            }
-        }
-        */
+
         for(e in enemyList.indices) {
             var playerBullets : Vector<Bullet> = player.getBullets()
             for(b in playerBullets.indices)
@@ -214,16 +187,17 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
             // Add more spawn points if needed
         )
 
-        for (e in enemyList) {
-            e.update(deltaTime)
+        for (e in enemyList.indices) {
+            enemyList[e].update(deltaTime)
             //Gdx.app.log("Enemy hitbox info", "Pos X: ${e.getHitBox().x}, Pos Y: ${e.getHitBox().y}, Hitbox height: ${e.getHitBox().height}, Hitbox width: ${e.getHitBox().width}")
-            if(e.checkCollision(player))
+            if(enemyList[e].checkCollision(player))
             {
                 player.damage(10)
                 hud.updateHealthBar(player.getPlayerHealth())
             }
+            var enemyBullets: Vector<Bullet> = enemyList[e].getBulletList()
 
-            if (e.getPos().x <= 0) {
+            if (enemyList[e].getPos().x <= 0) {
                 highScoreInterface.sendScore(hud.getScore())
                 //Gdx.app.log("Game Over", "An enemy has crossed the left side of the screen")
                 //Gdx.app.exit()
@@ -266,8 +240,11 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
                 hud.addScore(100)
             }
         }
+        updateEnemyBullets(deltaTime)
         //Removal of player's projectiles marked for deletion
         player.cleanUp()
+        //Removal of enemybullets and possibly other gameobjects
+        cleanUp()
     }
 
     public fun draw(deltaTime: Float) {
@@ -343,6 +320,7 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
         enemy.setPos(spawnPosition)
         enemy.setTexture(Content.getTexture("ships_void.png"))
         enemy.setType(type)
+        enemy.setBulletList(enemyBulletList)
 
         if(type == EnemyType.FAST)
         {
@@ -396,6 +374,29 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
             }
         }
         player.setTargetEnemy(closestEnemy)
+    }
+
+    public fun cleanUp()
+    {
+        for (b in enemyBulletList.indices.reversed()) {
+            if (enemyBulletList[b].isDead()) {
+                enemyBulletList[b] = null
+                enemyBulletList.removeAt(b)
+            }
+        }
+    }
+
+    public fun updateEnemyBullets(deltaTime: Float)
+    {
+        for (b in enemyBulletList) {
+            b.update(deltaTime)
+            if(b.checkCollision(player))
+            {
+                player.damage(10)
+                hud.updateHealthBar(player.getPlayerHealth())
+                b.kill()
+            }
+        }
     }
 
     override fun pause()

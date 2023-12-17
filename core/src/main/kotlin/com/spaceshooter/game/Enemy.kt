@@ -198,6 +198,7 @@ class Enemy() : GameObject() {
             shootTimer = 0.0f
         }
 
+        /*
         if(enemyBullets.isNotEmpty())
         {
             for(e in enemyBullets)
@@ -205,7 +206,7 @@ class Enemy() : GameObject() {
                 e.update(deltaTime)
             }
         }
-
+        */
     }
 
     fun tankUpdate(deltaTime: Float)
@@ -231,6 +232,11 @@ class Enemy() : GameObject() {
     public fun moveFlip(flip: Boolean)
     {
         this.flipMovement = flip
+    }
+
+    public fun setBulletList(bulletList: Vector<Bullet>)
+    {
+        this.enemyBullets = bulletList
     }
 
 }
