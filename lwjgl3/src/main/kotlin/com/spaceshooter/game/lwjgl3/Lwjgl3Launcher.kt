@@ -4,7 +4,7 @@ package com.spaceshooter.game.lwjgl3
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
-import com.spaceshooter.game.HighScoreInterface
+import com.spaceshooter.game.AndroidInterface
 import com.spaceshooter.game.Main
 
 /** Launches the desktop (LWJGL3) application. */
@@ -13,7 +13,7 @@ fun main() {
     if (StartupHelper.startNewJvmIfRequired())
         return
 
-    val highScoreInterface = HighScoreInterface.createDefault() // Create an instance or use another implementation
+    val highScoreInterface = AndroidInterface.createDefault() // Create an instance or use another implementation
 
     val main = Main(highScoreInterface)
     Lwjgl3Application(main, Lwjgl3ApplicationConfiguration().apply {

@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport
 import java.util.*
 
 
-class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdapter() {
+class Game(private val AndroidInterface: AndroidInterface) : ApplicationAdapter() {
 
     var camera: OrthographicCamera? = null
 
@@ -70,6 +70,7 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
     var thrusterEffect: ParticleEffect = ParticleEffect()
 
     private var gamePaused: Boolean = false
+    private var musicPlaing: Boolean = true
 
 
     fun initialize() {
@@ -117,7 +118,7 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
         if (player.getPlayerHealth() <= 0) {
             // Perform game-over logic here
             //Gdx.app.log("Game Over", "Player health reached 0. Game Over!")
-            highScoreInterface.sendScore(hud.getScore())
+            AndroidInterface.sendScore(hud.getScore())
             //Gdx.app.exit() // Close the application
         }
 
@@ -203,7 +204,7 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
             var enemyBullets: Vector<Bullet> = enemyList[e].getBulletList()
 
             if (enemyList[e].getPos().x <= 0) {
-                highScoreInterface.sendScore(hud.getScore())
+                AndroidInterface.sendScore(hud.getScore())
                 //Gdx.app.log("Game Over", "An enemy has crossed the left side of the screen")
                 //Gdx.app.exit()
             }
@@ -500,6 +501,11 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
         Gdx.app.log("Content", "Reloading assets")
         Content.reloadAssets()
     }
+
+    public fun stopOrPlayMusic(value: Boolean){
+        AndroidInterface.stopMusic(value)
+    }
+
 
     override fun dispose() {
         Content.dispose()
