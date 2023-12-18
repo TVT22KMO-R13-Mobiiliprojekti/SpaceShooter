@@ -33,8 +33,8 @@ class EnterScoreActivity : AppCompatActivity() {
 
         // Get the value from the intent extra
         val score = intent.getIntExtra("score", 0) // default to 0 if not found
-        val scoreText: String = "Your score was : $score"
-
+        val scoreText: String = "Well done! You played well enough to earn your place in top 10. Your score was : $score"
+        txtTitle.text = "GAME OVER"
         //txtDescription.text = scoreText
         // Log the received score for debugging
         Log.d("Received Score:", score.toString())
@@ -59,11 +59,16 @@ class EnterScoreActivity : AppCompatActivity() {
             // Check if the user's score is higher than the lowest top score
             if (topScores.isEmpty() || score > topScores.last()) {
                 // User's score is among the top 10, update the UI accordingly
-                txtTitle.text = "Congratulations!"
+
                 txtDescription.text = scoreText
-                editName.hint = "Enter your name"
+                editName.hint = "Enter your name here."
                 btnReturn.text = "Enter name"
                 btnReturn.setOnClickListener {
+                    if(editName.text.isEmpty())
+                    {
+                        editName.setError("Please enter your name.")
+                        return@setOnClickListener
+                    }
                     val nickName = editName.text.toString()
                     insertNewHighScore(nickName, score)
                     val intent = Intent(this, HighscoreActivity::class.java)
@@ -108,7 +113,7 @@ class EnterScoreActivity : AppCompatActivity() {
 
                 db.collection("highscores")
                     .orderBy("score", Query.Direction.DESCENDING)
-                    .limit(limit + 1) // Get the top (limit + 1) scores
+                    .limit(limit + 1) // Get the top 10 + 1 scores
                     .get()
                     .addOnSuccessListener { querySnapshot ->
                         val scoresToDelete = mutableListOf<String>()

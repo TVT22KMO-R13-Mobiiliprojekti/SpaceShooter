@@ -24,8 +24,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/space_quest"
 
-            android:rotationX="25"
-            android:text="SpaceShooter"
+            android:rotationX="20"
+            android:text="Astro Carnage"
 
             android:textAlignment="center"
             android:textColor="#FFFFFF"

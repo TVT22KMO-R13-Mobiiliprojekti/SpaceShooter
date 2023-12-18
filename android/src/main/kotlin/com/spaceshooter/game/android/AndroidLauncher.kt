@@ -65,6 +65,7 @@ class AndroidLauncher : AndroidApplication(), HighScoreInterface {
         val intent = Intent(this, EnterScoreActivity::class.java)
         intent.putExtra("score", value)
         Log.d("Score sent from GAME:", value.toString())
+        finish()
         mediaPlayer.switchMusic(this,musicMenu)
         startActivity(intent)
     }
