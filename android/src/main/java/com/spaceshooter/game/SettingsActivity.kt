@@ -39,5 +39,8 @@ class SettingsActivity : AppCompatActivity() {
         switchMusic.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) mediaPlayer.playBackgroundSound(this, musicMenu) else mediaPlayer.stopBackgroundSound()
         }
+        /*switchSfx.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) player.setSFXVolume(0.4f) else player.setSFXVolume(0.0f)
+        }*/
     }
 }

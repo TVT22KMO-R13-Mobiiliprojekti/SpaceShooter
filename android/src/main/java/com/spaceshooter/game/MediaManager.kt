@@ -7,21 +7,6 @@ object MediaManager {
     private var mediaPlayer: MediaPlayer? = null
     private var currentResourceId: Int? = null
 
-    fun initializeMediaPlayer(context: Context, resourceId: Int) {
-        releaseMediaPlayer()
-        mediaPlayer = MediaPlayer.create(context, resourceId)
-        mediaPlayer?.isLooping = true
-        currentResourceId = resourceId
-    }
-
-    fun startMediaPlayer() {
-        mediaPlayer?.start()
-    }
-
-    fun pauseMediaPlayer() {
-        mediaPlayer?.pause()
-    }
-
     fun releaseMediaPlayer() {
         mediaPlayer?.release()
         mediaPlayer = null
@@ -29,11 +14,6 @@ object MediaManager {
 
     fun isMediaPlayerPlaying(): Boolean {
         return mediaPlayer?.isPlaying ?: false
-    }
-
-    fun stopMediaPlayer() {
-        mediaPlayer?.stop()
-        mediaPlayer?.prepareAsync()
     }
 
     fun playBackgroundSound(context: Context, resourceId: Int) {
