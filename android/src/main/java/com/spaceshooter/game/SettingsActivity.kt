@@ -34,13 +34,21 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
         switchMusic.isChecked = mediaPlayer.isMediaPlayerPlaying()
+        switchSfx.isChecked = mediaPlayer.sfxToggle
 
 
         switchMusic.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) mediaPlayer.playBackgroundSound(this, musicMenu) else mediaPlayer.stopBackgroundSound()
         }
-        /*switchSfx.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) player.setSFXVolume(0.4f) else player.setSFXVolume(0.0f)
-        }*/
+        switchSfx.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                mediaPlayer.sfxVolume = 0.4f
+                mediaPlayer.sfxToggle = true
+            }
+            else {
+                mediaPlayer.sfxVolume = 0.0f
+                mediaPlayer.sfxToggle = false
+            }
+        }
     }
 }

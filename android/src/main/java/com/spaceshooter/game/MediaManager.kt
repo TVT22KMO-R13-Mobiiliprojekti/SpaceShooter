@@ -6,7 +6,8 @@ object MediaManager {
 
     private var mediaPlayer: MediaPlayer? = null
     private var currentResourceId: Int? = null
-
+    var sfxToggle : Boolean = true
+    var sfxVolume : Float = 0.4f
     fun releaseMediaPlayer() {
         mediaPlayer?.release()
         mediaPlayer = null
