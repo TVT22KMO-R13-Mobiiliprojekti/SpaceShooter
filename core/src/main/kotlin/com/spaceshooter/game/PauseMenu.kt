@@ -2,11 +2,13 @@ package com.spaceshooter.game
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 
 class PauseMenu(private val skin: Skin, private val stage: Stage) {
     private val fontScale = 3.0f
@@ -49,12 +51,15 @@ class PauseMenu(private val skin: Skin, private val stage: Stage) {
             true
         }
         val musicButton = TextButton("Music On/Off", skin)
-        musicButton.addListener {
+        musicButton.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                isMusicPlaying = !isMusicPlaying
+                game!!.stopOrPlayMusic(isMusicPlaying)
+                true
+            }
             // Add functionality
-            isMusicPlaying = !isMusicPlaying
-            game!!.stopOrPlayMusic(!isMusicPlaying)
-            true
-        }
+
+        })
 
         val sfxButton = TextButton("SFX On/Off", skin)
         sfxButton.addListener {
