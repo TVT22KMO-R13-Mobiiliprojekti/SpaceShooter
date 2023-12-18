@@ -6,23 +6,28 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
-interface HighScoreInterface {
+interface AndroidInterface {
     fun sendScore(value: Int)
+    fun stopMusic(value: Boolean)
 
     companion object {
         // Default implementation
-        fun createDefault(): HighScoreInterface {
-            return object : HighScoreInterface {
+        fun createDefault(): AndroidInterface {
+            return object : AndroidInterface {
                 override fun sendScore(value: Int) {
                     // Default implementation logic
                 }
+                override fun stopMusic(value: Boolean) {
+                    // Default implementation logic
+                }
             }
+
         }
     }
 }
 
 /** [com.badlogic.gdx.ApplicationListener] implementation shared by all platforms. */
-class Main(private val highScoreInterface: HighScoreInterface) : ApplicationAdapter() {
+class Main(private val highScoreInterface: AndroidInterface) : ApplicationAdapter() {
     private val batch by lazy { SpriteBatch() }
     private val image by lazy { Texture("libgdx.png") }
 

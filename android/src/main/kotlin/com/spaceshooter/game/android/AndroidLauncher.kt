@@ -8,12 +8,12 @@ import androidx.appcompat.app.AlertDialog
 import android.util.Log
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
-import com.spaceshooter.game.HighScoreInterface
+import com.spaceshooter.game.AndroidInterface
 import com.spaceshooter.game.*
 
 
 /** Launches the Android application. */
-class AndroidLauncher : AndroidApplication(), HighScoreInterface {
+class AndroidLauncher : AndroidApplication(), AndroidInterface {
 
     private lateinit var mediaPlayer: MediaManager
     private val musicMenu = R.raw.menu_music
@@ -68,5 +68,14 @@ class AndroidLauncher : AndroidApplication(), HighScoreInterface {
         finish()
         mediaPlayer.switchMusic(this,musicMenu)
         startActivity(intent)
+    }
+
+    override fun stopMusic(isPlaying: Boolean) {
+        if(isPlaying){
+            mediaPlayer.playBackgroundSound(this, musicGame)
+        }
+        else{
+            mediaPlayer.stopBackgroundSound()
+        }
     }
 }

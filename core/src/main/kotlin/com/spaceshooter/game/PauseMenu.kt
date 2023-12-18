@@ -13,6 +13,7 @@ class PauseMenu(private val skin: Skin, private val stage: Stage) {
     private val dialog: Dialog = createMenuDialog()
     private var dialogAdded: Boolean = false
     private var game: Game? = null
+    private var isMusicPlaying: Boolean = true
 
     private fun createMenuDialog(): Dialog {
         val titleLabel = Label("Pause menu", skin).apply {
@@ -50,6 +51,8 @@ class PauseMenu(private val skin: Skin, private val stage: Stage) {
         val musicButton = TextButton("Music On/Off", skin)
         musicButton.addListener {
             // Add functionality
+            isMusicPlaying = !isMusicPlaying
+            game!!.stopOrPlayMusic(!isMusicPlaying)
             true
         }
 
