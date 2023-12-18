@@ -31,6 +31,9 @@ object Content: ApplicationAdapter() {
         manager.load("ships_biomech.png", Texture::class.java)
         manager.load("ships_saucer.png", Texture::class.java)
         manager.load("animbullet.png", Texture::class.java)
+        manager.load("rocketpowerup.png", Texture::class.java)
+        manager.load("gunpowerup.png", Texture::class.java)
+        manager.load("health.png", Texture::class.java)
         manager.finishLoading()
     }
 

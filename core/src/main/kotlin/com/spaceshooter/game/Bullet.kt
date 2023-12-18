@@ -1,13 +1,12 @@
 package com.spaceshooter.game
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 
 enum class BulletType
 {
-    PROJECTILE, BEAM, ROCKET
+    PROJECTILE, SCATTER, ROCKET
 }
 class Bullet() : GameObject() {
 
@@ -34,7 +33,7 @@ class Bullet() : GameObject() {
         when(bulletType)
         {
             BulletType.PROJECTILE ->  projectileUpdate(deltaTime)
-            BulletType.BEAM ->  beamUpdate()
+            BulletType.SCATTER ->  beamUpdate(deltaTime)
             BulletType.ROCKET ->  rocketUpdate(deltaTime)
         }
 
@@ -75,6 +74,20 @@ class Bullet() : GameObject() {
             addAnimationFrame(posX, posY, sizeX, sizeY)
             //}
             rotation = 270.0f
+        }
+        else if(bulletType == BulletType.SCATTER)
+        {
+
+            bulletDamage = 5
+            posX = 0
+            posY = 0
+            sizeX = 16
+            sizeY = 16
+            frameCount = 4
+            for (i in 0 until frameCount) {
+                addAnimationFrame(posX + sizeX * i, posY, sizeX, sizeY)
+            }
+            rotation = 0.0f
         }
         sprite.rotate(rotation)
         val newRegion = textureRegions[currentFrame]
@@ -142,9 +155,10 @@ class Bullet() : GameObject() {
         position.y += speed.y * deltaTime
     }
 
-    private fun beamUpdate()
+    private fun beamUpdate(deltaTime: Float)
     {
-
+        position.x += speed.x * deltaTime
+        position.y += speed.y * deltaTime
     }
 
     public fun getDamage(): Int

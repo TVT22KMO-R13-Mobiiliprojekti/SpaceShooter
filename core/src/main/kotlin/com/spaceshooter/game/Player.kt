@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.math.MathUtils.random
 import com.badlogic.gdx.math.Vector2
 import java.util.*
 
@@ -21,11 +22,15 @@ class Player(): GameObject() {
     var soundId: Long = -1
 
     private var projectileTimer: Float = 0.0f
-    private var beamTimer: Float = 0.0f
+    private var scatterTimer: Float = 0.0f
     private var rocketTimer: Float = 0.0f
     private var projectileInterval: Float = 0.33f
-    private var beamInterval: Float = 0.3f
+    private var scatterInterval: Float = 0.03f
     private var rocketInterval: Float = 3.0f
+    private var scatterLeft: Float = 3.0f
+
+    private var hasRocket: Boolean = false
+    private var hasScatter: Boolean = false
 
     private var closestEnemy: Enemy? = null
 
@@ -214,7 +219,7 @@ class Player(): GameObject() {
     fun updateWeapons(deltaTime: Float)
     {
         projectileTimer += deltaTime
-        beamTimer += deltaTime
+        scatterTimer += deltaTime
         rocketTimer += deltaTime
 
         if (projectileTimer >= projectileInterval) {
@@ -238,7 +243,7 @@ class Player(): GameObject() {
             playerBullets.add(bullet)
             projectileTimer = 0.0f
         }
-        if (rocketTimer >= rocketInterval) {
+        if (rocketTimer >= rocketInterval && hasRocket) {
             var bullet: Bullet = Bullet()
             bullet.setType(BulletType.ROCKET)
             bullet.setTarget(closestEnemy)
@@ -258,6 +263,30 @@ class Player(): GameObject() {
             playerBullets.add(bullet)
             rocketTimer = 0.0f
             spawnThrusterEffect(bullet.getPos().x, bullet.getPos().y, 0.5f, bullet)
+        }
+        if (scatterTimer >= scatterInterval && hasScatter && scatterLeft >= 0.0f) {
+            var bullet: Bullet = Bullet()
+
+            bullet.setType(BulletType.SCATTER)
+            bullet.setTexture(Content.getTexture("animbullet.png"))
+            bullet.initialize()
+            bullet.setArea(Vector2(8.0f, 8.0f))
+            bullet.setPos(
+                Vector2(
+                    this.getPos().x + this.getArea().x / 2,
+                    this.getPos().y - bullet.getArea().y / 2)
+            )
+            bullet.setHitBoxSize(bullet.getArea().x, bullet.getArea().y)
+
+            bullet.setSpeed(Vector2(600.0f, random(300).toFloat() - 150.0f))
+            //bullet.setSpeed(Vector2(400.0f, 100.0f - random(200.0f)))
+            playerBullets.add(bullet)
+            scatterTimer = 0.0f
+        }
+        scatterLeft -= deltaTime
+        if(scatterLeft <= 0.0f)
+        {
+            hasScatter = false
         }
     }
 
@@ -299,6 +328,16 @@ class Player(): GameObject() {
         bullet.setThruster(pooledEffect)
     }
 
+    public fun rocketUpgrade()
+    {
+        hasRocket = true
+    }
+
+    public fun scatterUpgrade()
+    {
+        scatterLeft = 3.0f
+        hasScatter = true
+    }
     //Use at the end of update-loop for cleaning up dead objects in Game.kt
     public fun cleanUp()
     {
@@ -307,6 +346,15 @@ class Player(): GameObject() {
                 playerBullets[b] = null
                 playerBullets.removeAt(b)
             }
+        }
+    }
+
+    public fun heal(health: Int)
+    {
+        this.playerHealth += health
+        if(this.playerHealth >= 100.0f)
+        {
+            this.playerHealth = 100.0f
         }
     }
 

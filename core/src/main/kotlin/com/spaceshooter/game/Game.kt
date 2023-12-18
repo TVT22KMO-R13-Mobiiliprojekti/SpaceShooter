@@ -2,7 +2,6 @@ package com.spaceshooter.game
 
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.ParticleEffect
@@ -35,8 +34,6 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
     private var bg2XPos = 1920f // assuming the width of the image is 1920
     private var bg3XPos = 1920f
 
-    private val playerImage by lazy { Texture("player.png") }
-
     private var bulletList: Vector<Bullet> = Vector<Bullet>()
     private var enemyList: Vector<Enemy> = Vector<Enemy>()
     private var enemyBulletList: Vector<Bullet> = Vector<Bullet>()
@@ -60,6 +57,10 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
     private val hud by lazy { Hud(batch, stage) }
 
     private val player: Player = Player()
+    private var powerUp: GameObject = GameObject()
+    private var powerUpCreated: Boolean = false
+    private var powerUpTimer: Float = 0.0f
+    private var powerUpType: Int = 1
 
     lateinit var explosionEffectPool: ParticleEffectPool
     lateinit var thrusterEffectPool: ParticleEffectPool
@@ -180,8 +181,8 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
         enemyTimer += deltaTime
 
         enemyUpdates(deltaTime)
-
         findClosestEnemy()
+        powerUpUpdate(deltaTime)
 
         // spawn points
         val spawnPoints = arrayOf(
@@ -265,6 +266,10 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
         batch.draw(background2, bg2XPos, 0f, 1920f, 1080f)
         //batch.draw(background1, bg3XPos, 0f, 1920f, 1080f)
         player.render(batch)
+
+        if(powerUpCreated) {
+            powerUp.render(batch)
+        }
 
         for (e in enemyList) {
             //batch.draw(e.getTexture(), e.getPos().x, e.getPos().y, e.getArea().x, e.getArea().y)
@@ -401,6 +406,77 @@ class Game(private val highScoreInterface: HighScoreInterface) : ApplicationAdap
                 b.kill()
             }
         }
+    }
+
+    fun createPowerUp(type: Int)
+    {
+        powerUp.setPos(Vector2(1984.0f, 508.0f))
+        powerUp.setArea(Vector2(64.0f, 32.0f))
+        powerUp.setHitBoxSize(powerUp.getArea().x, powerUp.getArea().y)
+        powerUp.setSpeed(Vector2(-200.0f, 0.0f))
+        when(type)
+        {
+            1 ->  {
+                powerUp.setTexture(Content.getTexture("rocketpowerup.png"))
+                powerUpType = 1
+            }
+            2 -> {
+                powerUp.setTexture(Content.getTexture("gunpowerup.png"))
+                powerUpType = 2
+            }
+            3 -> {
+                powerUp.setTexture(Content.getTexture("health.png"))
+                powerUpType = 3
+            }
+        }
+        powerUpCreated = true
+    }
+
+    fun powerUpUpdate(deltaTime: Float)
+    {
+        if(powerUpTimer >= 5.0f && !powerUpCreated) {
+            val rnd = random(1, 3)
+            Gdx.app.log("RANDOM NUMBER WAS", rnd.toString())
+            createPowerUp(rnd)
+            powerUpTimer = 0.0f
+        }
+        else
+        {
+            powerUpTimer += deltaTime
+        }
+
+
+        if(powerUpCreated)
+        {
+            if(powerUp.checkCollision(player))
+            {
+                when(powerUpType)
+                {
+                    1-> player.rocketUpgrade()
+                    2-> player.scatterUpgrade()
+                    3-> {
+                        player.heal(30)
+                        hud.updateHealthBar(player.getPlayerHealth())
+                    }
+                }
+                powerUpCreated = false
+                powerUpTimer = 0.0f
+            }
+            powerUp.update(deltaTime)
+            //Gdx.app.log("POWERUP POS: ", powerUp.getPos().x.toString())
+            //Gdx.app.log("POWERUP POS Y: ", powerUp.sprite.height.toString())
+            if(powerUp.position.x < 64.0f)
+            {
+                powerUpTimer = 0.0f
+                powerUpCreated = false
+            }
+        }
+    }
+
+    fun powerUpReset()
+    {
+        powerUpTimer = 0.0f
+        powerUpCreated = false
     }
 
     public fun pauseGame(paused: Boolean)

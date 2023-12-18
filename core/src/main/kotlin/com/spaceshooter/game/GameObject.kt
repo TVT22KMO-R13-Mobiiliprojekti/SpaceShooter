@@ -19,7 +19,7 @@ open class GameObject() {
     internal var animationTimer: Float = 0.0f
     internal var animationInterval: Float = 0.5f
     internal var currentFrame: Int = 0
-    internal var frameCount : Int = 0
+    internal var frameCount : Int = 1
 
 
     internal var position: Vector2 = Vector2(0.0f, 0.0f)
@@ -29,7 +29,14 @@ open class GameObject() {
     internal var hitBox : Rectangle = Rectangle()
     internal var isDead : Boolean = false
 
-    open fun update(deltaTime: Float) {}
+    open fun update(deltaTime: Float)
+    {
+        position.x += speed.x * deltaTime
+        position.y += speed.y * deltaTime
+
+        sprite.setPosition(position.x, position.y)
+        updateHitBox()
+    }
     open fun render(spriteBatch: SpriteBatch)
     {
         sprite.draw(spriteBatch)
