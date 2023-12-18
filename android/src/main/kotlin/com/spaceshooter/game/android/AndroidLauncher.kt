@@ -78,4 +78,8 @@ class AndroidLauncher : AndroidApplication(), AndroidInterface {
             mediaPlayer.stopBackgroundSound()
         }
     }
+
+    override fun changeToMenuMusic(value: Boolean) {
+        mediaPlayer.playBackgroundSound(this, musicMenu)
+    }
 }

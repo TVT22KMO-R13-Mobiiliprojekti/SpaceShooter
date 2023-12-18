@@ -20,6 +20,7 @@ class Player(): GameObject() {
 
     private var shootingSound: Sound? = null
     var soundId: Long = -1
+    var soundVolume: Float = 0.4f
 
     private var projectileTimer: Float = 0.0f
     private var scatterTimer: Float = 0.0f
@@ -47,7 +48,13 @@ class Player(): GameObject() {
     fun setHud(hud: Hud) {
         this.hud = hud
     }
+    fun setSFXVolume(volume: Float) {
+        soundVolume = volume
+    }
 
+    fun playShootingSound() {
+        soundId = shootingSound?.play(soundVolume) ?: -1
+    }
     override fun update(deltaTime: Float)
     {
         position.x += speed.x * deltaTime
@@ -235,8 +242,9 @@ class Player(): GameObject() {
             )
             bullet.setHitBoxSize(bullet.getArea().x, bullet.getArea().y)
 
-            soundId = shootingSound?.play() ?: -1
-            shootingSound?.setVolume(soundId,0.5f)
+            //soundId = shootingSound?.play() ?: -1
+            playShootingSound()
+            //shootingSound?.setVolume(soundId,0.4f)
 
             bullet.setSpeed(Vector2(600.0f, 0.0f))
             //bullet.setSpeed(Vector2(400.0f, 100.0f - random(200.0f)))

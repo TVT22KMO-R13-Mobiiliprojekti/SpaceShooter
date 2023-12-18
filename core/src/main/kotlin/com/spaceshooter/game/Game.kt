@@ -506,6 +506,13 @@ class Game(private val AndroidInterface: AndroidInterface) : ApplicationAdapter(
         AndroidInterface.stopMusic(value)
     }
 
+    fun changeMusic(value: Boolean){
+        AndroidInterface.changeToMenuMusic(value)
+    }
+
+    public fun setSFXVolume(fl: Float) {
+        player.setSFXVolume(fl)
+    }
 
     override fun dispose() {
         Content.dispose()

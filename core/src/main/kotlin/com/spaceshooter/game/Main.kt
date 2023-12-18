@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 interface AndroidInterface {
     fun sendScore(value: Int)
     fun stopMusic(value: Boolean)
+    fun changeToMenuMusic(value: Boolean)
 
     companion object {
         // Default implementation
@@ -18,6 +19,9 @@ interface AndroidInterface {
                     // Default implementation logic
                 }
                 override fun stopMusic(value: Boolean) {
+                    // Default implementation logic
+                }
+                override fun changeToMenuMusic(value: Boolean) {
                     // Default implementation logic
                 }
             }

@@ -16,6 +16,8 @@ class PauseMenu(private val skin: Skin, private val stage: Stage) {
     private var dialogAdded: Boolean = false
     private var game: Game? = null
     private var isMusicPlaying: Boolean = true
+    private var isSFXPlaying: Boolean = true
+    private lateinit var player : Player
 
     private fun createMenuDialog(): Dialog {
         val titleLabel = Label("Pause menu", skin).apply {
@@ -39,6 +41,7 @@ class PauseMenu(private val skin: Skin, private val stage: Stage) {
         quitButton.style = buttonStyle
         quitButton.addListener {
             // Stop game
+            game!!.changeMusic(true)
             Gdx.app.exit()
             true
         }
@@ -57,14 +60,17 @@ class PauseMenu(private val skin: Skin, private val stage: Stage) {
                 game!!.stopOrPlayMusic(isMusicPlaying)
                 true
             }
-            // Add functionality
-
         })
 
         val sfxButton = TextButton("SFX On/Off", skin)
-        sfxButton.addListener {
-            true
-        }
+        sfxButton.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                isSFXPlaying = !isSFXPlaying // Toggle the SFX state
+                game?.setSFXVolume(if (isSFXPlaying) 0.4f else 0.0f)
+                //player.playShootingSound(if (isSFXPlaying) 0.4f else 0.0f)
+                true
+            }
+        })
 
         dialog.contentTable.add(quitButton).row()
         dialog.contentTable.add(continueButton).row()
